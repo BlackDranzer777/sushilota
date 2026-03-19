@@ -1,0 +1,98 @@
+/*
+ * Nav.module.css
+ * Pill-shaped floating nav styles with glass blur effect.
+ */
+
+.header {
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 14px 20px;
+  background: rgba(10, 10, 10, 0.75);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: all;
+  transition: padding 0.3s var(--ease-out-expo);
+  font-size: 0.9375rem;
+}
+
+/* ─── Logo ─────────────────────────────────── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logoMark {
+  color: var(--amber);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.logoText {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+}
+
+/* ─── Links ─────────────────────────────────── */
+.links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0 24px;
+}
+
+.link {
+  display: block;
+  padding: 6px 14px;
+  color: var(--text-muted);
+  font-size: inherit;
+  font-weight: 400;
+  border-radius: var(--radius-pill);
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── CTA ────────────────────────────────────── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: var(--amber);
+  color: #0a0a0a;
+  font-size: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}

@@ -1,0 +1,135 @@
+/*
+ * Footer.module.css — dark, minimal, editorial.
+ */
+
+.footer {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 80px 80px 40px 200px;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* ─── Top row ─────────────────────────────────── */
+.top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 80px;
+  align-items: start;
+}
+
+/* ─── Brand block ─────────────────────────────── */
+.brand {
+  flex-shrink: 0;
+}
+
+.wordmark {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+.location {
+  font-size: var(--text-nav);
+  color: var(--amber);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ─── Links ───────────────────────────────────── */
+.linksWrap {
+  display: flex;
+  gap: 48px;
+}
+
+.linkCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.colHeading {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 4px;
+}
+
+.linkCol ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-nav);
+  color: rgba(255,255,255,0.5);
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--amber);
+}
+
+.linkNum {
+  font-size: var(--text-label);
+  color: rgba(255,255,255,0.25);
+  min-width: 22px;
+}
+
+/* ─── Right tagline ───────────────────────────── */
+.rightQuote {
+  text-align: right;
+}
+
+.bigTagline {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.15);
+  line-height: 1.2;
+}
+
+.bigTagline em {
+  color: rgba(254,178,93,0.3);
+  font-style: italic;
+}
+
+/* ─── Bottom bar ──────────────────────────────── */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.copy,
+.copyRight {
+  font-size: var(--text-label);
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.02em;
+}

@@ -1,0 +1,26 @@
+/*
+ * TornPaper.module.css
+ *
+ * .wrapper sits between CinematicHero and ServiceSections in the DOM.
+ * negative margin-top pulls it UP over the hero's bottom edge,
+ * creating the visual overlap / rip effect.
+ *
+ * z-index: 6 places it above the hero's illustration layers (z 0–4)
+ * but below the TopBar and SideNav (z 100+).
+ *
+ * pointer-events: none so scroll / click pass through to hero.
+ */
+
+.wrapper {
+  position: relative;
+  z-index: 6;
+  margin-top: -72px;   /* overlap amount — increase to push further into hero */
+  line-height: 0;       /* collapse any whitespace gap */
+  pointer-events: none;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 80px;         /* visual height of the torn edge zone */
+}

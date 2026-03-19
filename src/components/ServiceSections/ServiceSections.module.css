@@ -1,0 +1,102 @@
+/*
+ * ServiceSections.module.css
+ * Statement break and CTA section styles.
+ * Individual service card styles live in ServiceCard.module.css.
+ */
+
+/* ─── Statement break ────────────────────────────────────────── */
+.statement {
+  padding: 120px 80px 120px 200px;
+  background: var(--amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--dark);
+  line-height: 1.4;
+  max-width: 900px;
+  text-align: center;
+  quotes: none;
+}
+
+/* ─── CTA section ────────────────────────────────────────────── */
+.cta {
+  background: var(--teal-deep);
+  padding: 160px 80px 160px 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  height: 80vw;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(254,178,93,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.ctaInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.ctaTitle {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.ctaSub {
+  font-size: var(--text-body);
+  color: rgba(255,255,255,0.55);
+  max-width: 420px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 18px 48px;
+  background: var(--amber);
+  color: var(--dark);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.2s ease;
+  margin-top: 16px;
+}
+
+.ctaBtn:hover {
+  opacity: 0.88;
+}

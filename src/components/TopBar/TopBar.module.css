@@ -1,0 +1,46 @@
+/*
+ * TopBar.module.css — fully transparent, text always white.
+ */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-topbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px;
+  /* No background — painting shows through */
+  pointer-events: none; /* let clicks pass through the bar itself */
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  pointer-events: all;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 24px;
+  background: var(--amber);
+  color: var(--dark);
+  font-family: var(--font-body);
+  font-size: var(--text-nav);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: all;
+}
+
+.cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}

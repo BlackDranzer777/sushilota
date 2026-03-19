@@ -1,0 +1,68 @@
+/*
+ * StatsStrip.module.css
+ * Full-width stat showcase with amber display numbers.
+ */
+
+.section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 100px 48px;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ─── Individual stat ────────────────────────── */
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.stat:last-child {
+  border-right: none;
+}
+
+/* ─── Number display ─────────────────────────── */
+.number {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.number span:first-child {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 900;
+  color: var(--amber);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  /* will be updated by GSAP via textContent */
+}
+
+.suffix {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1;
+  opacity: 0.7;
+}
+
+/* ─── Label ──────────────────────────────────── */
+.label {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}

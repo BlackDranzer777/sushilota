@@ -1,0 +1,66 @@
+/*
+ * MarqueeStrip.module.css
+ * Two amber ticker rows scrolling in opposite directions.
+ */
+
+.wrapper {
+  background: var(--amber);
+  overflow: hidden;
+  padding: 0;
+  border-top:    2px solid rgba(0,0,0,0.1);
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+/* ─── Each row ───────────────────────────────── */
+.row {
+  overflow: hidden;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+/* ─── Scrolling track ────────────────────────── */
+.track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marqueeFwd 30s linear infinite;
+  will-change: transform;
+}
+
+.trackReverse {
+  animation: marqueeRev 28s linear infinite;
+}
+
+@keyframes marqueeFwd {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+
+@keyframes marqueeRev {
+  from { transform: translateX(-33.333%); }
+  to   { transform: translateX(0); }
+}
+
+/* ─── Items ──────────────────────────────────── */
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 28px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--dark);
+  white-space: nowrap;
+  border-right: 1px solid rgba(0,0,0,0.12);
+}
+
+.dot {
+  font-size: 0.55rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}

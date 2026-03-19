@@ -1,0 +1,72 @@
+/*
+ * SideNav.module.css
+ * Fixed left sidebar — service label + Roman numeral.
+ * Dark semi-transparent pill container so it reads over the illustration.
+ */
+
+.nav {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-nav);
+
+  background: rgba(10, 26, 24, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ─── Each nav item ──────────────────────────────────────────────── */
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 5px 4px;
+  color: var(--mint);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.5;
+  border-bottom: 1px solid transparent;
+  transition: opacity 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.item:hover {
+  opacity: 0.85;
+  color: var(--white);
+}
+
+.active {
+  opacity: 1;
+  color: var(--amber);
+  font-weight: 500;
+}
+
+/* Roman numeral — right side */
+.numeral {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 400;
+  opacity: 0.55;
+  min-width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.active .numeral {
+  opacity: 1;
+  color: var(--amber);
+}

@@ -1,0 +1,117 @@
+/*
+ * CTA.module.css
+ * Cream background contrast break — stands out from the dark sections.
+ */
+
+.section {
+  position: relative;
+  background: var(--cream);
+  padding: 140px 48px;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* ─── Radial gradient accent ─────────────────── */
+.bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%,  rgba(240, 165, 0, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 100%, rgba(74, 158, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ─── Content ────────────────────────────────── */
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 900;
+  color: #0a0a0a;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+
+.heading em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.sub {
+  font-size: 1.0625rem;
+  color: rgba(10, 10, 10, 0.55);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+
+/* ─── Buttons ────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 40px;
+  background: #0a0a0a;
+  color: var(--cream);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btnPrimary:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 36px;
+  border: 1.5px solid rgba(10, 10, 10, 0.2);
+  color: rgba(10, 10, 10, 0.7);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: var(--radius-pill);
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btnGhost:hover {
+  border-color: rgba(10, 10, 10, 0.5);
+  color: #0a0a0a;
+  transform: translateY(-2px);
+}
+
+/* ─── Footnote ───────────────────────────────── */
+.footnote {
+  font-size: 0.8125rem;
+  color: rgba(10, 10, 10, 0.4);
+}

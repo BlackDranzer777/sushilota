@@ -1,0 +1,173 @@
+/*
+ * Hero.module.css
+ * Full-viewport hero with animated gradient mesh and editorial typography.
+ */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 140px 24px 80px;
+}
+
+/* ─── Gradient mesh background ───────────────────── */
+.mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 30%, rgba(240, 165, 0, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(74, 158, 255, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 10%, rgba(240, 165, 0, 0.07) 0%, transparent 50%);
+  animation: meshShift 12s ease-in-out infinite alternate;
+}
+
+.meshGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 30% at 50% 50%, rgba(240, 165, 0, 0.05) 0%, transparent 70%);
+  animation: meshPulse 6s ease-in-out infinite;
+}
+
+@keyframes meshShift {
+  0%   { transform: scale(1) translate(0, 0); }
+  33%  { transform: scale(1.05) translate(-2%, 2%); }
+  66%  { transform: scale(0.98) translate(2%, -1%); }
+  100% { transform: scale(1.03) translate(-1%, 1%); }
+}
+
+@keyframes meshPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+/* ─── Content ────────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* ─── Badge ──────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(240, 165, 0, 0.1);
+  border: 1px solid rgba(240, 165, 0, 0.25);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ─── Heading ────────────────────────────────────── */
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--cream);
+  margin-bottom: 28px;
+  /* Allow word spans to wrap naturally */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+}
+
+.word {
+  display: inline-block;
+  /* Each word is its own animation target */
+}
+
+/* ─── Subtext ────────────────────────────────────── */
+.sub {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-muted);
+  font-weight: 300;
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 44px;
+}
+
+/* ─── Actions ────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 32px;
+  background: var(--amber);
+  color: #0a0a0a;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btnPrimary:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}
+
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btnGhost:hover {
+  color: var(--cream);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+/* ─── Scroll indicator ───────────────────────────── */
+.scrollIndicator {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-faint);
+  z-index: 1;
+}
