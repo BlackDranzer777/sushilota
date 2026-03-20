@@ -10,7 +10,11 @@ export default function TopBar() {
   return (
     <header className={styles.topbar} role="banner">
       <a href="#" className={styles.wordmark} aria-label="Sushi Lota — home">
-        Sushi Lota
+        <img
+          src="/wordmark.png"
+          alt="Sushi Lota"
+          className={styles.wordmarkImg}
+        />
       </a>
       <a href="#contact" className={styles.cta}>
         Get in touch

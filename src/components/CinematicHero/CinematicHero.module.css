@@ -2,15 +2,14 @@
  * CinematicHero.module.css
  *
  * .outer  — 250vh, provides the scroll travel distance.
- * .scene  — position: sticky, stays pinned at top:0 for the full 250vh scroll.
- *           overflow: hidden clips parallax bleed and ink canvas.
+ * .scene  — position: sticky, stays pinned for the full 250vh scroll.
  *
- * hero.png split: each img is 200% wide inside a 55% container.
- *   bgLeft  → left:0  → shows left half of image.
- *   bgRight → right:0 → shows right half of image.
- *   Both containers are 5% oversized (left:-5%) to allow parallax bleed.
+ * A single WebGL canvas (.inkCanvas) renders the full scene:
+ *   - hero.png illustration (as a GPU texture)
+ *   - Ink rising from bottom (domain-warped FBM)
+ *   - Distortion at the ink boundary (illustration melts into ink)
  *
- * inkCanvas sits above all layers (z-index 10), WebGL renders the ink.
+ * effectLayer sits above the canvas for effect.png (mix-blend-mode: screen).
  */
 
 /* ─── Outer scroll container ─────────────────────────────────────── */
@@ -25,58 +24,21 @@
   top: 0;
   height: 100vh;
   overflow: hidden;
-  background: var(--mint);
+  background: #9bdec3;  /* mint fallback — visible before WebGL texture loads */
 }
 
-/* ─── Left half of hero.png ──────────────────────────────────────── */
-.bgLeft {
+/* ─── WebGL canvas: full-scene renderer ──────────────────────────── */
+.inkCanvas {
   position: absolute;
-  left:   -5%;
-  top:    -5%;
-  width:   55%;
-  height: 110%;
-  overflow: hidden;
-  will-change: transform;
-  transform-origin: center center;
-}
-
-.bgLeft img {
-  position: absolute;
-  left: 0;
-  top:  0;
-  width:  200%;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: left center;
-  max-width: none;
-  user-select: none;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
 }
 
-/* ─── Right half of hero.png ─────────────────────────────────────── */
-.bgRight {
-  position: absolute;
-  right:  -5%;
-  top:    -5%;
-  width:   55%;
-  height: 110%;
-  overflow: hidden;
-  will-change: transform;
-  transform-origin: center center;
-}
-
-.bgRight img {
-  position: absolute;
-  right: 0;
-  top:   0;
-  width:  200%;
-  height: 100%;
-  object-fit: cover;
-  object-position: right center;
-  max-width: none;
-  user-select: none;
-}
-
-/* ─── effect.png overlay (mix-blend-mode: screen) ───────────────── */
+/* ─── effect.png overlay (mix-blend-mode: screen removes black) ──── */
 .effectLayer {
   position: absolute;
   inset: -5%;
@@ -85,21 +47,10 @@
   background-position: center 55%;
   background-repeat: no-repeat;
   mix-blend-mode: screen;
-  z-index: 3;
+  z-index: 2;
   will-change: transform;
   transform-origin: center center;
   pointer-events: none;
-}
-
-/* ─── WebGL ink canvas ───────────────────────────────────────────── */
-.inkCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none;
-  display: block;
 }
 
 /* ─── Scroll hint ────────────────────────────────────────────────── */
@@ -112,7 +63,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  z-index: 11;
+  z-index: 5;
   pointer-events: none;
 }
 

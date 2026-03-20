@@ -1,0 +1,71 @@
+/*
+ * Section2.module.css
+ * Background matches ink color exactly (#5f8674) — seamless from hero ink.
+ */
+
+.section {
+  background: #5f8674;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 80px 120px 220px; /* 220px left clears the SideNav */
+  position: relative;
+}
+
+.inner {
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ─── Label ──────────────────────────────────────────────────────── */
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--peach-light);
+  opacity: 0.7;
+}
+
+/* ─── Heading ────────────────────────────────────────────────────── */
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+/* ─── Body ───────────────────────────────────────────────────────── */
+.body {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 560px;
+}
+
+/* ─── CTA pill ───────────────────────────────────────────────────── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 36px;
+  background: #E6D2C3;
+  color: var(--dark);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-pill);
+  align-self: flex-start;
+  margin-top: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.cta:hover {
+  opacity: 0.88;
+}

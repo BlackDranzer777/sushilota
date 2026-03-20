@@ -1,12 +1,13 @@
 /*
  * App.jsx — Sushi Lota
  * Building sections one by one.
- * Current: Hero (with built-in bottom-up ink + scale) + placeholder section 2.
+ * Current: Hero (ink) → Section 2
  */
 
 import TopBar from './components/TopBar/TopBar'
 import SideNav from './components/SideNav/SideNav'
 import CinematicHero from './components/CinematicHero/CinematicHero'
+import Section2 from './components/Section2/Section2'
 
 export default function App() {
   return (
@@ -16,11 +17,7 @@ export default function App() {
 
       <main>
         <CinematicHero />
-        {/* ── Section 2 placeholder — replace when ready ─────────── */}
-        <div
-          id="section-2"
-          style={{ height: '100vh', background: '#026b64' }}
-        />
+        <Section2 />
       </main>
     </>
   )
