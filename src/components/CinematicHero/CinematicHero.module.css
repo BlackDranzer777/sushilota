@@ -53,6 +53,13 @@
   pointer-events: none;
 }
 
+@media (max-width: 768px) {
+  .effectLayer {
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
 /* ─── Scroll hint ────────────────────────────────────────────────── */
 .scrollHint {
   position: absolute;

@@ -10,7 +10,14 @@
   align-items: center;
   padding: 120px 80px 120px 220px;
   position: relative;
-  overflow: hidden;   /* keeps grain canvas contained */
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 80px 28px 100px 28px;
+    align-items: flex-start;
+  }
 }
 
 /* ─── Animated grain canvas ──────────────────────────────────────── */
@@ -39,9 +46,7 @@
 
 /* ─── Split-line clip container ──────────────────────────────────── */
 .lineWrap {
-  overflow: hidden;
-  /* Small padding-bottom so descenders aren't clipped */
-  padding-bottom: 0.08em;
+  /* overflow: hidden removed — clipPath handles the reveal mask */
 }
 
 /* ─── Label ──────────────────────────────────────────────────────── */
@@ -101,4 +106,18 @@
 
 .cta:hover {
   opacity: 0.88;
+}
+
+@media (max-width: 768px) {
+  .inner {
+    gap: 20px;
+  }
+
+  .heading {
+    font-size: clamp(2.4rem, 11vw, 3.2rem);
+  }
+
+  .body {
+    font-size: 0.97rem;
+  }
 }

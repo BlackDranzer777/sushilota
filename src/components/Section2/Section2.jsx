@@ -17,8 +17,8 @@ import styles                from './Section2.module.css'
 
 /* ── Animation presets ───────────────────────────────────────────── */
 const lineReveal = (delay = 0) => ({
-  initial:     { y: '105%' },
-  whileInView: { y: 0 },
+  initial:     { clipPath: 'inset(0 0 100% 0)', y: 10 },
+  whileInView: { clipPath: 'inset(0 0 -10% 0)', y: 0 },
   viewport:    { once: true, margin: '-80px' },
   transition:  { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
 })
