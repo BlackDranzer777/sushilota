@@ -1,69 +1,69 @@
 /*
  * SideNav.module.css
- * Fixed left sidebar — service label + Roman numeral.
- * Dark semi-transparent pill container so it reads over the illustration.
+ * Minimal editorial rail — label left, Roman numeral right.
+ * Fixed at bottom-left corner.
  */
+
+@media (max-width: 768px) {
+  .nav { display: none; }
+}
 
 .nav {
   position: fixed;
-  left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 28px;
+  bottom: 48px;
   z-index: var(--z-nav);
-
-  background: rgba(10, 26, 24, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 14px 18px;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
-/* ─── Each nav item ──────────────────────────────────────────────── */
+/* ─── Each item ──────────────────────────────────────────────────── */
 .item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 5px 4px;
-  color: var(--mint);
+  align-items: baseline;
+  gap: 32px;
+  padding: 3px 0;
+  color: rgba(255, 255, 255, 0.28);
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 400;
-  letter-spacing: 0.02em;
-  opacity: 0.5;
-  border-bottom: 1px solid transparent;
-  transition: opacity 0.25s ease, color 0.25s ease;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   cursor: pointer;
+  transition: color 0.25s ease;
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.6),
+    0 0   14px rgba(0, 0, 0, 0.35);
 }
 
 .item:hover {
-  opacity: 0.85;
-  color: var(--white);
+  color: rgba(255, 255, 255, 0.55);
 }
 
+/* ─── Active state ───────────────────────────────────────────────── */
 .active {
-  opacity: 1;
-  color: var(--amber);
+  color: var(--white);
   font-weight: 500;
 }
 
-/* Roman numeral — right side */
+/* ─── Label + numeral ────────────────────────────────────────────── */
+.label {
+  flex: 1;
+}
+
 .numeral {
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 400;
-  opacity: 0.55;
+  opacity: 0.5;
   min-width: 24px;
   text-align: right;
   flex-shrink: 0;
+  transition: opacity 0.25s ease, color 0.25s ease;
 }
 
 .active .numeral {

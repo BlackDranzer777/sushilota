@@ -306,8 +306,7 @@ export default function CinematicHero() {
         end:     'bottom top',
         scrub:   true,
         onUpdate(self) {
-          /* Ink starts at 30% scroll, completes at 100% */
-          inkPRef.current = Math.max(0, (self.progress - 0.3) / 0.7)
+          inkPRef.current = self.progress
         },
       })
     }, outerRef)

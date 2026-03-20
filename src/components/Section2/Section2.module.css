@@ -8,19 +8,45 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 120px 80px 120px 220px; /* 220px left clears the SideNav */
+  padding: 120px 80px 120px 220px;
   position: relative;
+  overflow: hidden;   /* keeps grain canvas contained */
 }
 
+/* ─── Animated grain canvas ──────────────────────────────────────── */
+.grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Scale the 256×256 canvas up — low resolution adds to the grain character */
+  image-rendering: pixelated;
+  opacity: 0.055;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Content sits above the grain ───────────────────────────────── */
 .inner {
+  position: relative;
+  z-index: 1;
   max-width: 780px;
   display: flex;
   flex-direction: column;
   gap: 28px;
 }
 
+/* ─── Split-line clip container ──────────────────────────────────── */
+.lineWrap {
+  overflow: hidden;
+  /* Small padding-bottom so descenders aren't clipped */
+  padding-bottom: 0.08em;
+}
+
 /* ─── Label ──────────────────────────────────────────────────────── */
 .label {
+  display: block;
   font-family: var(--font-body);
   font-size: var(--text-label);
   font-weight: 600;
@@ -32,11 +58,18 @@
 
 /* ─── Heading ────────────────────────────────────────────────────── */
 .heading {
-  font-family: var(--font-display);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   font-size: clamp(2.8rem, 5.5vw, 5.2rem);
   font-weight: 600;
   line-height: 1.08;
   letter-spacing: -0.02em;
+}
+
+.headingLine {
+  display: block;
+  font-family: var(--font-display);
   color: var(--white);
 }
 
