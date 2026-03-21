@@ -46,7 +46,7 @@
 
 /* ─── Split-line clip container ──────────────────────────────────── */
 .lineWrap {
-  /* overflow: hidden removed — clipPath handles the reveal mask */
+  display: block;
 }
 
 /* ─── Label ──────────────────────────────────────────────────────── */

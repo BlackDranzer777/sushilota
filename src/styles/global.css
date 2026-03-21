@@ -67,6 +67,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--dark);
 }
 
 body {

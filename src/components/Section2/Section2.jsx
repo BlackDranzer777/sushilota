@@ -1,34 +1,20 @@
 /*
  * Section2.jsx
  *
- * TEXT:   Split-line reveal — each heading line slides up from behind
- *         an overflow:hidden clip. Label + body + CTA use a clean
- *         fade+slide. All driven by Framer Motion whileInView.
+ * TEXT:   GSAP ScrollTrigger — more reliable than Framer Motion whileInView
+ *         on mobile. Each heading line reveals via clipPath, label/body/CTA
+ *         fade+slide up. All triggered when section enters viewport.
  *
- * BG:     Animated film grain — a 256×256 canvas of random noise,
- *         scaled to cover the section via CSS. Updates every 2nd frame
- *         (~30fps) for performance. mix-blend-mode: soft-light keeps
- *         it subtle and natural over the teal background.
+ * BG:     Animated film grain canvas — 256×256 random noise, mix-blend-mode
+ *         soft-light, paused via IntersectionObserver when off-screen.
  */
 
 import { useEffect, useRef } from 'react'
-import { motion }            from 'framer-motion'
+import { gsap }              from 'gsap'
+import { ScrollTrigger }     from 'gsap/ScrollTrigger'
 import styles                from './Section2.module.css'
 
-/* ── Animation presets ───────────────────────────────────────────── */
-const lineReveal = (delay = 0) => ({
-  initial:     { clipPath: 'inset(0 0 100% 0)', y: 10 },
-  whileInView: { clipPath: 'inset(0 0 -10% 0)', y: 0 },
-  viewport:    { once: true, margin: '-80px' },
-  transition:  { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
-})
-
-const fadeUp = (delay = 0) => ({
-  initial:     { opacity: 0, y: 28 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport:    { once: true, margin: '-80px' },
-  transition:  { duration: 0.85, ease: [0.16, 1, 0.3, 1], delay },
-})
+gsap.registerPlugin(ScrollTrigger)
 
 const HEADING_LINES = [
   "We don't just market",
@@ -36,15 +22,67 @@ const HEADING_LINES = [
   "matter.",
 ]
 
-const GRAIN_SIZE = 256   /* canvas px — scaled up via CSS */
+const GRAIN_SIZE = 256
 
 export default function Section2() {
-  const grainRef     = useRef(null)
-  const sectionRef   = useRef(null)
-  const rafRef       = useRef(null)
-  const visibleRef   = useRef(false)
+  const sectionRef  = useRef(null)
+  const grainRef    = useRef(null)
+  const locationRef = useRef(null)
+  const line0Ref    = useRef(null)
+  const line1Ref    = useRef(null)
+  const line2Ref    = useRef(null)
+  const bodyRef     = useRef(null)
+  const ctaRef      = useRef(null)
 
-  /* ── Animated grain canvas ───────────────────────────────────────── */
+  const rafRef     = useRef(null)
+  const visibleRef = useRef(false)
+
+  /* ── GSAP text animations ─────────────────────────────────────── */
+  useEffect(() => {
+    const lineRefs = [line0Ref, line1Ref, line2Ref]
+    const lines    = lineRefs.map(r => r.current).filter(Boolean)
+
+    /* Set initial states */
+    gsap.set(lines, { clipPath: 'inset(0 0 100% 0)', y: 10 })
+    gsap.set(
+      [locationRef.current, bodyRef.current, ctaRef.current],
+      { opacity: 0, y: 24 }
+    )
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger:  sectionRef.current,
+        start:    'top 85%',   /* fires when top of section is 85% down the viewport */
+        once:     true,
+      },
+    })
+
+    /* Location label */
+    tl.to(locationRef.current, {
+      opacity: 1, y: 0,
+      duration: 0.7, ease: 'power3.out',
+    })
+
+    /* Heading lines — clipPath reveal with stagger */
+    tl.to(lines, {
+      clipPath: 'inset(0 0 -10% 0)',
+      y:        0,
+      duration: 0.85,
+      ease:     'power3.out',
+      stagger:  0.1,
+    }, '-=0.4')
+
+    /* Body + CTA */
+    tl.to([bodyRef.current, ctaRef.current], {
+      opacity: 1, y: 0,
+      duration: 0.7, ease: 'power3.out',
+      stagger: 0.1,
+    }, '-=0.4')
+
+    return () => tl.scrollTrigger?.kill()
+  }, [])
+
+  /* ── Animated grain canvas ───────────────────────────────────── */
   useEffect(() => {
     const canvas = grainRef.current
     if (!canvas) return
@@ -57,9 +95,8 @@ export default function Section2() {
     const tick = () => {
       rafRef.current = requestAnimationFrame(tick)
       if (!visibleRef.current) return
-
       frame++
-      if (frame % 2 !== 0) return   /* ~30fps grain update */
+      if (frame % 2 !== 0) return
 
       const img  = ctx.createImageData(GRAIN_SIZE, GRAIN_SIZE)
       const data = img.data
@@ -71,7 +108,6 @@ export default function Section2() {
       ctx.putImageData(img, 0, 0)
     }
 
-    /* Pause grain when section is off-screen */
     const io = new IntersectionObserver(
       ([entry]) => { visibleRef.current = entry.isIntersecting },
       { threshold: 0 }
@@ -79,54 +115,44 @@ export default function Section2() {
     if (sectionRef.current) io.observe(sectionRef.current)
 
     rafRef.current = requestAnimationFrame(tick)
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      io.disconnect()
-    }
+    return () => { cancelAnimationFrame(rafRef.current); io.disconnect() }
   }, [])
 
   return (
     <section ref={sectionRef} id="section-2" className={styles.section}>
 
-      {/* Grain overlay */}
       <canvas ref={grainRef} className={styles.grain} aria-hidden="true" />
 
       <div className={styles.inner}>
 
-        {/* Label — fade+slide */}
-        <div className={styles.lineWrap}>
-          <motion.p className={styles.label} {...lineReveal(0)}>
-            Jaipur&nbsp;·&nbsp;India
-          </motion.p>
-        </div>
+        <p ref={locationRef} className={styles.label}>
+          Jaipur&nbsp;·&nbsp;India
+        </p>
 
-        {/* Heading — split-line reveal, one clip per line */}
         <h2 className={styles.heading}>
-          {HEADING_LINES.map((line, i) => (
-            <div key={line} className={styles.lineWrap}>
-              <motion.span className={styles.headingLine} {...lineReveal(i * 0.09)}>
-                {line}
-              </motion.span>
-            </div>
-          ))}
+          {HEADING_LINES.map((line, i) => {
+            const refs = [line0Ref, line1Ref, line2Ref]
+            return (
+              <div key={line} ref={refs[i]} className={styles.lineWrap}>
+                <span className={styles.headingLine}>{line}</span>
+              </div>
+            )
+          })}
         </h2>
 
-        {/* Body — fade+slide */}
-        <motion.p className={styles.body} {...fadeUp(0.25)}>
+        <p ref={bodyRef} className={styles.body}>
           Sushi Lota is a full-service creative and marketing agency rooted in
           Jaipur&apos;s artistic heritage. Strategy, design, and storytelling —
           crafted with the precision of an itamae.
-        </motion.p>
+        </p>
 
-        {/* CTA */}
-        <motion.a
+        <a
+          ref={ctaRef}
           href="#contact"
           className={styles.cta}
-          {...fadeUp(0.35)}
-          whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
         >
           Work with us
-        </motion.a>
+        </a>
 
       </div>
     </section>
