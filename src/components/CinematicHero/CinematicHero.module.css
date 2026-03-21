@@ -60,6 +60,19 @@
   }
 }
 
+/* ─── Film grain overlay ─────────────────────────────────────────── */
+.grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  opacity: 0.055;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 3;
+}
+
 /* ─── Scroll hint ────────────────────────────────────────────────── */
 .scrollHint {
   position: absolute;

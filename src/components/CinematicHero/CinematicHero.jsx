@@ -151,14 +151,19 @@ const FRAG = `
   }
 `
 
+const GRAIN_SIZE = 256
+
 export default function CinematicHero() {
   const outerRef  = useRef(null)
   const effectRef = useRef(null)  /* effect.png overlay (CSS, mix-blend-mode: screen) */
   const canvasRef = useRef(null)  /* WebGL canvas — full scene renderer               */
+  const grainRef  = useRef(null)  /* film grain canvas                                */
 
   /* Shared state between effects (no re-renders needed → refs) */
-  const glStateRef = useRef(null) /* { gl, uProgress, uMouse, uCoverScale }           */
-  const inkPRef    = useRef(0)    /* current ink progress, set by ScrollTrigger        */
+  const glStateRef  = useRef(null) /* { gl, uProgress, uMouse, uCoverScale }          */
+  const inkPRef     = useRef(0)    /* current ink progress, set by ScrollTrigger       */
+  const grainRafRef = useRef(null)
+  const visibleRef  = useRef(true)
 
   /* ── WebGL setup ───────────────────────────────────────────────── */
   useEffect(() => {
@@ -297,6 +302,41 @@ export default function CinematicHero() {
     }
   }, [])
 
+  /* ── Animated grain canvas ──────────────────────────────────────── */
+  useEffect(() => {
+    const canvas = grainRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    canvas.width  = GRAIN_SIZE
+    canvas.height = GRAIN_SIZE
+
+    let frame = 0
+    const tick = () => {
+      grainRafRef.current = requestAnimationFrame(tick)
+      if (!visibleRef.current) return
+      frame++
+      if (frame % 2 !== 0) return
+
+      const img  = ctx.createImageData(GRAIN_SIZE, GRAIN_SIZE)
+      const data = img.data
+      for (let i = 0; i < data.length; i += 4) {
+        const v = (Math.random() * 255) | 0
+        data[i] = data[i + 1] = data[i + 2] = v
+        data[i + 3] = 255
+      }
+      ctx.putImageData(img, 0, 0)
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => { visibleRef.current = entry.isIntersecting },
+      { threshold: 0 }
+    )
+    if (outerRef.current) io.observe(outerRef.current)
+
+    grainRafRef.current = requestAnimationFrame(tick)
+    return () => { cancelAnimationFrame(grainRafRef.current); io.disconnect() }
+  }, [])
+
   /* ── GSAP ScrollTrigger: ink progress ───────────────────────────── */
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -322,6 +362,9 @@ export default function CinematicHero() {
 
         {/* effect.png overlay — mix-blend-mode: screen removes black bg */}
         <div ref={effectRef} className={styles.effectLayer} aria-hidden="true" />
+
+        {/* Film grain overlay */}
+        <canvas ref={grainRef} className={styles.grain} aria-hidden="true" />
 
         {/* Scroll hint */}
         <div className={styles.scrollHint} aria-hidden="true">
