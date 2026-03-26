@@ -1,0 +1,191 @@
+/*
+ * ServicesSection.module.css
+ *
+ * Intro panel + 7 service panels.
+ * Each service uses travel (320vh) + sticky scene (100vh).
+ */
+
+/* ─── Intro panel ────────────────────────────────────────────────── */
+.intro {
+  background: #F6EDD8;
+  padding:    140px 220px 100px;
+  overflow:   hidden;
+}
+
+.introInner {
+  display:        flex;
+  flex-direction: column;
+  gap:            20px;
+  max-width:      700px;
+}
+
+.introNum {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          #B34A16;
+  margin:         0;
+}
+
+.introHead {
+  display:        flex;
+  flex-direction: column;
+  font-family:    var(--font-display);
+  font-size:      clamp(3.5rem, 8vw, 8rem);
+  font-weight:    600;
+  line-height:    1.0;
+  letter-spacing: -0.03em;
+  color:          #0a1a18;
+  margin:         0;
+}
+
+.introHead span { display: block; }
+
+.introBody {
+  font-family: var(--font-body);
+  font-size:   clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.75;
+  color:       rgba(10, 26, 24, 0.55);
+}
+
+/* ─── Travel + scene ─────────────────────────────────────────────── */
+.travel {
+  height: 320vh;
+}
+
+.scene {
+  position:        sticky;
+  top:             0;
+  height:          100vh;
+  background:      var(--svc-bg, #F6EDD8);
+  color:           var(--svc-text, #0a1a18);
+  display:         grid;
+  grid-template-columns: 50% 50%;
+  overflow:        hidden;
+}
+
+/* ─── Content column ─────────────────────────────────────────────── */
+.content {
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding:         80px 60px 80px 220px;
+  gap:             24px;
+}
+
+.meta {
+  display:    flex;
+  align-items: center;
+  gap:        16px;
+}
+
+.num {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    700;
+  letter-spacing: 0.15em;
+  opacity:        0.45;
+}
+
+.svcLabel {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding:        5px 14px;
+  border:         1px solid currentColor;
+  border-radius:  var(--radius-pill);
+  opacity:        0.55;
+}
+
+.title {
+  display:        flex;
+  flex-direction: column;
+  font-family:    var(--font-display);
+  font-size:      clamp(3rem, 5.5vw, 5.6rem);
+  font-weight:    600;
+  line-height:    1.04;
+  letter-spacing: -0.025em;
+  margin:         0;
+}
+
+.titleLine {
+  display:  block;
+  overflow: hidden;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size:   clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.78;
+  opacity:     0.62;
+  max-width:   440px;
+}
+
+.tags {
+  font-family:    var(--font-body);
+  font-size:      0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity:        0.4;
+}
+
+.tagSep { opacity: 0.5; }
+
+/* ─── Visual column ──────────────────────────────────────────────── */
+.visual {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         60px 80px 60px 24px;
+  cursor:          none;
+}
+
+.visualInner {
+  position:      relative;
+  width:         80%;
+  max-width:     440px;
+  border-radius: 4px;
+  overflow:      hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25), 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.img {
+  display:    block;
+  width:      100%;
+  object-fit: cover;
+  will-change: transform;
+  transition: transform 0.5s ease;
+}
+
+/* Colour accent overlay on hover */
+.overlay {
+  position: absolute;
+  inset:    0;
+  opacity:  0;
+  mix-blend-mode: multiply;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .content { padding: 80px 48px 80px 120px; }
+  .intro   { padding: 120px 120px 80px; }
+}
+
+@media (max-width: 1024px) {
+  .scene   { grid-template-columns: 1fr; }
+  .content { padding: 80px 48px 40px 80px; }
+  .visual  { padding: 32px 48px 80px; }
+  .intro   { padding: 100px 64px 80px; }
+}
+
+@media (max-width: 768px) {
+  .content  { padding: 60px 28px 32px; gap: 18px; }
+  .visual   { padding: 20px 28px 60px; }
+  .title    { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+  .intro    { padding: 80px 28px 60px; }
+  .introHead { font-size: clamp(2.8rem, 13vw, 4rem); }
+}

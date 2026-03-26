@@ -1,0 +1,146 @@
+/*
+ * CTASection.module.css
+ * Clean, paper-tone closing section. Minimal animation.
+ */
+
+.section {
+  background:  #F6EDD8;
+  min-height:  100vh;
+  display:     flex;
+  align-items: center;
+  overflow:    hidden;
+}
+
+.inner {
+  width:     100%;
+  max-width: 1400px;
+  margin:    0 auto;
+  padding:   120px 220px;
+  display:   flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* ─── Rule ───────────────────────────────────────────────────────── */
+.ruler {
+  height:     1px;
+  background: rgba(10, 26, 24, 0.15);
+  width:      100%;
+}
+
+/* ─── Heading ────────────────────────────────────────────────────── */
+.heading {
+  display:        flex;
+  flex-direction: column;
+  margin:         0;
+}
+
+.headLine {
+  display:        block;
+  font-family:    var(--font-display);
+  font-size:      clamp(3.2rem, 7.5vw, 8rem);
+  font-weight:    600;
+  line-height:    1.02;
+  letter-spacing: -0.03em;
+  color:          #0a1a18;
+  overflow:       hidden;
+}
+
+/* ─── Sub ────────────────────────────────────────────────────────── */
+.sub {
+  font-family: var(--font-body);
+  font-size:   clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.75;
+  color:       rgba(10, 26, 24, 0.55);
+  max-width:   540px;
+}
+
+/* ─── Actions ────────────────────────────────────────────────────── */
+.actions {
+  display:     flex;
+  align-items: center;
+  gap:         28px;
+  flex-wrap:   wrap;
+}
+
+.ctaPrimary {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            10px;
+  padding:        16px 40px;
+  background:     #0a1a18;
+  color:          #F6EDD8;
+  font-family:    var(--font-body);
+  font-size:      1rem;
+  font-weight:    600;
+  letter-spacing: 0.03em;
+  border-radius:  var(--radius-pill);
+  transition:     background 0.25s ease, gap 0.25s ease;
+}
+
+.ctaPrimary:hover {
+  background: #026b64;
+  gap:        16px;
+}
+
+.ctaDivider {
+  font-family: var(--font-body);
+  font-size:   0.88rem;
+  color:       rgba(10, 26, 24, 0.35);
+}
+
+.ctaSecondary {
+  font-family:    var(--font-body);
+  font-size:      0.96rem;
+  font-weight:    600;
+  color:          #0a1a18;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition:     color 0.2s ease;
+}
+
+.ctaSecondary:hover { color: #026b64; }
+
+/* ─── Footer ─────────────────────────────────────────────────────── */
+.footer {
+  display:     flex;
+  align-items: center;
+  gap:         32px;
+  margin-top:  auto;
+  padding-top: 48px;
+  border-top:  1px solid rgba(10, 26, 24, 0.1);
+}
+
+.footerBrand {
+  font-family:    var(--font-display);
+  font-size:      1.1rem;
+  font-weight:    600;
+  color:          #0a1a18;
+  letter-spacing: -0.01em;
+}
+
+.footerCity,
+.footerYear {
+  font-family:    var(--font-body);
+  font-size:      0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          rgba(10, 26, 24, 0.35);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .inner { padding: 100px 120px; }
+}
+
+@media (max-width: 1024px) {
+  .inner { padding: 80px 64px; }
+}
+
+@media (max-width: 768px) {
+  .inner    { padding: 80px 28px; gap: 36px; }
+  .headLine { font-size: clamp(2.6rem, 12vw, 4rem); }
+  .actions  { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer   { gap: 20px; flex-wrap: wrap; }
+}

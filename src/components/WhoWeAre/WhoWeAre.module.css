@@ -1,0 +1,181 @@
+/*
+ * WhoWeAre.module.css
+ * Paper-tone two-column layout. Text left, framed illustration right.
+ */
+
+.section {
+  background:            #F6EDD8;
+  min-height:            100vh;
+  display:               grid;
+  grid-template-columns: 52% 48%;
+  position:              relative;
+  overflow:              hidden;
+}
+
+/* ─── Text column ────────────────────────────────────────────────── */
+.text {
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding:         120px 64px 120px 220px;
+  gap:             32px;
+}
+
+.label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          #026b64;
+}
+
+.heading {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.6rem, 4.8vw, 4.8rem);
+  font-weight:    600;
+  line-height:    1.08;
+  letter-spacing: -0.025em;
+  color:          #0a1a18;
+  margin:         0;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size:   clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.8;
+  color:       rgba(10, 26, 24, 0.65);
+  max-width:   480px;
+}
+
+/* ─── Stats row ──────────────────────────────────────────────────── */
+.stats {
+  display: flex;
+  gap:     40px;
+}
+
+.stat {
+  display:        flex;
+  flex-direction: column;
+  gap:            4px;
+}
+
+.statValue {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.2rem, 3.5vw, 3.2rem);
+  font-weight:    600;
+  color:          #0a1a18;
+  letter-spacing: -0.02em;
+  line-height:    1;
+}
+
+.statLabel {
+  font-family:    var(--font-body);
+  font-size:      0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          rgba(10, 26, 24, 0.45);
+}
+
+/* ─── CTA ────────────────────────────────────────────────────────── */
+.cta {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            10px;
+  padding:        14px 36px;
+  background:     #0a1a18;
+  color:          #F6EDD8;
+  font-family:    var(--font-body);
+  font-size:      0.88rem;
+  font-weight:    600;
+  letter-spacing: 0.06em;
+  border-radius:  var(--radius-pill);
+  align-self:     flex-start;
+  transition:     background 0.25s ease, gap 0.25s ease;
+}
+
+.cta:hover {
+  background: #026b64;
+  gap:        16px;
+}
+
+.ctaArrow {
+  transition: transform 0.25s ease;
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* ─── Image column ───────────────────────────────────────────────── */
+.imageCol {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         80px 80px 80px 20px;
+}
+
+/* Frame with subtle tilt */
+.frame {
+  position:     relative;
+  width:         84%;
+  max-width:     480px;
+  transform:     rotate(1.5deg);
+}
+
+.frameInner {
+  overflow:      hidden;
+  border-radius: 4px;
+  box-shadow:
+    0 40px 100px rgba(10, 26, 24, 0.22),
+    0 8px  28px  rgba(10, 26, 24, 0.12),
+    0 0 0  1px   rgba(10, 26, 24, 0.06);
+}
+
+.illustration {
+  display:    block;
+  width:      100%;
+  object-fit: cover;
+}
+
+/* Decorative corners */
+.corner {
+  position:   absolute;
+  width:      24px;
+  height:     24px;
+  border:     1.5px solid rgba(2, 107, 100, 0.45);
+}
+
+.cornerTL {
+  top:    -8px;
+  left:   -8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.cornerBR {
+  bottom: -8px;
+  right:  -8px;
+  border-left: none;
+  border-top:  none;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .text { padding: 100px 48px 100px 160px; }
+}
+
+@media (max-width: 1024px) {
+  .section { grid-template-columns: 1fr; }
+  .text    { padding: 80px 48px 40px 160px; }
+  .imageCol { padding: 32px 48px 80px; }
+  .frame { max-width: 380px; transform: rotate(0.8deg); }
+}
+
+@media (max-width: 768px) {
+  .text  { padding: 80px 28px 32px; gap: 24px; }
+  .imageCol { padding: 24px 28px 80px; }
+  .frame { width: 80%; max-width: 300px; }
+  .heading { font-size: clamp(2.2rem, 10vw, 3rem); }
+  .stats { gap: 24px; flex-wrap: wrap; }
+}

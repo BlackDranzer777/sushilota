@@ -1,0 +1,149 @@
+/*
+ * ObjectivesSection.module.css
+ *
+ * Dark canvas. Three posters arranged in a staggered row.
+ * Each poster is a card with a visible tilt and a push-pin accent.
+ */
+
+.section {
+  background:      #0a1a18;
+  min-height:      100vh;
+  padding:         120px 220px 140px;
+  display:         flex;
+  flex-direction:  column;
+  gap:             72px;
+  overflow:        hidden;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+.header {
+  display:        flex;
+  flex-direction: column;
+  gap:            20px;
+}
+
+.label {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          rgba(246, 237, 216, 0.35);
+}
+
+.heading {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.8rem, 5.5vw, 5.6rem);
+  font-weight:    600;
+  line-height:    1.06;
+  letter-spacing: -0.025em;
+  color:          #F6EDD8;
+  margin:         0;
+}
+
+/* ─── Poster row ─────────────────────────────────────────────────── */
+.posters {
+  display:    flex;
+  gap:        32px;
+  align-items: flex-start;
+}
+
+/* ─── Poster card ────────────────────────────────────────────────── */
+.poster {
+  position:      relative;
+  flex:          1;
+  background:    #F6EDD8;
+  border-radius: 3px;
+  overflow:      hidden;
+  cursor:        default;
+  will-change:   transform;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 6px  20px rgba(0, 0, 0, 0.3),
+    0 0 0  1px  rgba(255, 255, 255, 0.04);
+}
+
+/* Push pin */
+.pin {
+  position:     absolute;
+  top:          16px;
+  left:         50%;
+  transform:    translateX(-50%);
+  width:        12px;
+  height:       12px;
+  border-radius: 50%;
+  z-index:      10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.posterImg {
+  width:    100%;
+  overflow: hidden;
+}
+
+.posterImg img {
+  display:    block;
+  width:      100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.poster:hover .posterImg img {
+  transform: scale(1.06);
+}
+
+.posterContent {
+  padding: 28px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.posterNum {
+  font-family:    var(--font-body);
+  font-size:      0.72rem;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.posterTitle {
+  font-family:    var(--font-display);
+  font-size:      clamp(1.4rem, 2vw, 1.9rem);
+  font-weight:    600;
+  color:          #0a1a18;
+  letter-spacing: -0.015em;
+  margin:         0;
+  line-height:    1.15;
+}
+
+.posterBody {
+  font-family: var(--font-body);
+  font-size:   0.88rem;
+  line-height: 1.7;
+  color:       rgba(10, 26, 24, 0.58);
+}
+
+/* Odd poster sits slightly lower */
+.posters > *:nth-child(2) {
+  margin-top: 48px;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .section { padding: 100px 120px 120px; }
+}
+
+@media (max-width: 1024px) {
+  .section { padding: 80px 64px 100px; }
+  .posters { gap: 24px; }
+}
+
+@media (max-width: 768px) {
+  .section  { padding: 80px 28px 100px; gap: 48px; }
+  .posters  { flex-direction: column; align-items: center; gap: 32px; }
+  .poster   { width: 85%; max-width: 360px; }
+  .posters > *:nth-child(2) { margin-top: 0; }
+  .heading  { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+}

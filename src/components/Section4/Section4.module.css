@@ -1,0 +1,231 @@
+/*
+ * Section4.module.css — The Method (Process)
+ * Same cinematic architecture as Section3.
+ * Slightly different typography treatment for variety.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTRO PANEL
+   ═══════════════════════════════════════════════════════════════════ */
+
+.intro {
+  background:   var(--dark);
+  color:        var(--white);
+  min-height:   60vh;
+  display:      flex;
+  align-items:  center;
+  padding:      80px 80px 80px 220px;
+  position:     relative;
+  overflow:     hidden;
+}
+
+.introInner {
+  display:        flex;
+  flex-direction: column;
+  gap:            20px;
+}
+
+.introNum {
+  font-family:    var(--font-body);
+  font-size:      0.7rem;
+  font-weight:    600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--coral);
+  opacity:        0; /* GSAP */
+}
+
+.introHead {
+  display:        flex;
+  flex-direction: column;
+  font-family:    var(--font-display);
+  font-style:     italic;
+  font-size:      clamp(5rem, 10vw, 10rem);
+  font-weight:    400;
+  line-height:    0.95;
+  letter-spacing: -0.03em;
+}
+
+.introHead span {
+  display:  block;
+  overflow: hidden;
+}
+
+.introBody {
+  font-family:    var(--font-body);
+  font-size:      clamp(0.88rem, 1.1vw, 1rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color:          rgba(255, 255, 255, 0.38);
+  opacity:        0; /* GSAP */
+  margin-top:     4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TRAVEL + STICKY
+   ═══════════════════════════════════════════════════════════════════ */
+
+.travel {
+  height:   320vh;
+  position: relative;
+}
+
+.scene {
+  position:   sticky;
+  top:        0;
+  height:     100vh;
+  display:    grid;
+  grid-template-columns: 55% 45%;
+  background: var(--panel-bg);
+  color:      var(--panel-text);
+  overflow:   hidden;
+}
+
+/* ── Content ────────────────────────────────────────────────────── */
+.content {
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding:         0 72px 0 220px;
+  gap:             16px;
+  position:        relative;
+  z-index:         2;
+}
+
+/* ── Eyebrow ────────────────────────────────────────────────────── */
+.eyebrow {
+  opacity: 0; /* GSAP */
+}
+
+.eyeLabel {
+  font-family:    var(--font-body);
+  font-size:      0.68rem;
+  font-weight:    600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity:        0.45;
+}
+
+/* ── Step number (decorative, large) ───────────────────────────── */
+.stepNum {
+  font-family:    var(--font-display);
+  font-style:     italic;
+  font-weight:    300;
+  font-size:      clamp(5rem, 10vw, 9rem);
+  line-height:    1;
+  letter-spacing: -0.04em;
+  opacity:        0;   /* GSAP */
+  margin-bottom:  -8px;
+}
+
+/* ── Step label + rule row ──────────────────────────────────────── */
+.stepMeta {
+  display:     flex;
+  align-items: center;
+  gap:         16px;
+  margin-top:  -4px;
+}
+
+.stepLabel {
+  font-family:    var(--font-body);
+  font-size:      0.68rem;
+  font-weight:    600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity:        0.5;
+  white-space:    nowrap;
+}
+
+.rule {
+  flex:        1;
+  height:      1px;
+  background:  currentColor;
+  opacity:     0.18;
+  max-width:   60px;
+}
+
+/* ── Headline ───────────────────────────────────────────────────── */
+.title {
+  display:        flex;
+  flex-direction: column;
+  font-family:    var(--font-display);
+  font-style:     italic;
+  font-weight:    400;
+  font-size:      clamp(3rem, 5vw, 5.4rem);
+  line-height:    1.04;
+  letter-spacing: -0.025em;
+  opacity:        0; /* GSAP */
+}
+
+.titleLine {
+  display: block;
+}
+
+.char {
+  display:     inline-block;
+  will-change: transform, opacity;
+}
+
+/* ── Body ───────────────────────────────────────────────────────── */
+.body {
+  font-family: var(--font-body);
+  font-size:   clamp(0.9rem, 1.1vw, 1rem);
+  line-height: 1.85;
+  opacity:     0; /* GSAP */
+  max-width:   460px;
+}
+
+/* ── Tags ───────────────────────────────────────────────────────── */
+.tags {
+  font-family:    var(--font-body);
+  font-size:      0.72rem;
+  letter-spacing: 0.04em;
+  line-height:    1.8;
+  opacity:        0; /* GSAP */
+}
+
+.tagSep {
+  opacity: 0.3;
+}
+
+/* ── Visual ─────────────────────────────────────────────────────── */
+.visual {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         80px 72px 80px 24px;
+  position:        relative;
+  z-index:         2;
+  opacity:         0; /* GSAP */
+}
+
+.visualInner {
+  width:         86%;
+  aspect-ratio:  4 / 5;
+  border:        1px solid currentColor;
+  border-radius: var(--radius-lg);
+  opacity:       0.07;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1200px) {
+  .intro   { padding: 72px 60px 72px 160px; }
+  .content { padding: 0 56px 0 160px; }
+}
+
+@media (max-width: 1024px) {
+  .scene { grid-template-columns: 1fr; }
+  .visual { padding: 0 48px 60px; }
+  .visualInner { aspect-ratio: 16/9; width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .intro   { padding: 64px 28px; min-height: 50vh; }
+  .content { padding: 0 28px; }
+  .introHead { font-size: clamp(4.5rem, 18vw, 7rem); }
+  .title     { font-size: clamp(2.8rem, 11vw, 4.5rem); }
+  .stepNum   { font-size: clamp(4rem, 16vw, 7rem); }
+}

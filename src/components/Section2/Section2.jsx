@@ -1,16 +1,20 @@
 /*
  * Section2.jsx
  *
- * TEXT:   GSAP ScrollTrigger — each heading line reveals via clipPath,
- *         label/body/CTA fade+slide up. Triggered when section enters viewport.
+ * LAYOUT: Two-column grid — text left (55%), 3D photo right (45%).
  *
- * BG:     WebGL canvas (mix-blend-mode: multiply) renders section2_1.png
- *         across the full section. Because white × teal-bg = teal, edges fade
- *         seamlessly. The illustration appears as if printed on teal paper.
- *         Features: horizontal auto-scroll via fract() tiling, mouse-X speed
- *         nudge, dual-frequency wave distortion, chromatic aberration.
+ * TEXT:   GSAP ScrollTrigger — heading lines reveal via clipPath,
+ *         label/body/CTA fade+slide up.
  *
- * GRAIN:  256×256 animated noise canvas (soft-light, opacity 0.055).
+ * PHOTO:  WebGL canvas renders section2_1.png with:
+ *           - object-fit: cover cropping
+ *           - mouse-reactive parallax UV shift (fake depth layers)
+ *           - chromatic aberration (grows with mouse distance)
+ *           - specular sheen that follows the mouse (physical photo feel)
+ *           - edge vignette
+ *         CSS 3D tilt (GSAP rotationX/Y on photoWrap) adds physical card feel.
+ *
+ * GRAIN:  256×256 animated noise canvas — hook kept, opacity 0 in CSS.
  *
  * PARALLAX: Mouse X shifts each text layer at a different depth.
  */
@@ -31,26 +35,29 @@ const HEADING_LINES = [
 const GRAIN_SIZE = 256
 
 export default function Section2() {
-  const sectionRef  = useRef(null)
-  const bgRef       = useRef(null)   /* WebGL bg canvas  */
-  const grainRef    = useRef(null)   /* film grain canvas */
-  const locationRef = useRef(null)
-  const line0Ref    = useRef(null)
-  const line1Ref    = useRef(null)
-  const line2Ref    = useRef(null)
-  const bodyRef     = useRef(null)
-  const ctaRef      = useRef(null)
+  const sectionRef   = useRef(null)
+  const grainRef     = useRef(null)   /* film grain — hook kept, opacity 0 */
+  const locationRef  = useRef(null)
+  const line0Ref     = useRef(null)
+  const line1Ref     = useRef(null)
+  const line2Ref     = useRef(null)
+  const bodyRef      = useRef(null)
+  const ctaRef       = useRef(null)
 
-  const bgRafRef    = useRef(null)
-  const grainRafRef = useRef(null)
-  const mouseRafRef = useRef(null)
-  const visibleRef  = useRef(false)
+  const photoRef     = useRef(null)   /* WebGL photo canvas */
+  const photoWrapRef = useRef(null)   /* CSS 3D tilt container */
 
-  /* ── GSAP text reveal ────────────────────────────────────────── */
+  const grainRafRef  = useRef(null)
+  const mouseRafRef  = useRef(null)
+  const photoRafRef  = useRef(null)
+  const visibleRef   = useRef(false)
+
+  /* ── GSAP text reveal ────────────────────────────────────────────── */
   useEffect(() => {
     const lineRefs = [line0Ref, line1Ref, line2Ref]
     const lines    = lineRefs.map(r => r.current).filter(Boolean)
 
+    const ctx = gsap.context(() => {
     gsap.set(lines, { clipPath: 'inset(0 0 100% 0)', y: 10 })
     gsap.set(
       [locationRef.current, bodyRef.current, ctaRef.current],
@@ -73,17 +80,16 @@ export default function Section2() {
     tl.to([bodyRef.current, ctaRef.current], {
       opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1,
     }, '-=0.4')
-
-    return () => tl.scrollTrigger?.kill()
+    })
+    return () => ctx.revert()
   }, [])
 
-  /* ── Mouse parallax (x-axis only, avoids conflict with y reveal) ─ */
+  /* ── Mouse parallax on text (x-axis only) ────────────────────────── */
   useEffect(() => {
-    let tx = 0, ty = 0, cx = 0, cy = 0
+    let tx = 0, cx = 0
 
     const onMove = (e) => {
-      tx = (e.clientX / window.innerWidth  - 0.5) * 2
-      ty = (e.clientY / window.innerHeight - 0.5) * 2
+      tx = (e.clientX / window.innerWidth - 0.5) * 2
     }
 
     const LAYERS = [
@@ -99,7 +105,6 @@ export default function Section2() {
       mouseRafRef.current = requestAnimationFrame(tick)
       if (!visibleRef.current) return
       cx += (tx - cx) * 0.06
-      cy += (ty - cy) * 0.06
       LAYERS.forEach(({ ref, mx }) => {
         if (ref.current) gsap.set(ref.current, { x: cx * mx })
       })
@@ -113,21 +118,25 @@ export default function Section2() {
     }
   }, [])
 
-  /* ── WebGL full-section background ──────────────────────────────
+  /* ── WebGL 3D photo (right column) ──────────────────────────────────
    *
-   * mix-blend-mode: multiply (CSS) composites this canvas over the
-   * section's #5f8674 teal background. Key insight:
-   *   white (1,1,1) × teal = teal  → white areas vanish into bg
-   *   illustration colors × teal  → muted, tinted, editorial look
+   * Fragment shader:
+   *   1. object-fit: cover — image fills canvas regardless of aspect ratio
+   *   2. Mouse parallax UV offset — simulates depth layers shifting
+   *   3. Subtle breathing wave distortion
+   *   4. Chromatic aberration — color channels split toward mouse
+   *   5. Vignette — darkened edges for photograph feel
+   *   6. Specular sheen — bright spot follows mouse like light on a print
    *
-   * Edge vignettes fade to WHITE so they multiply to pure teal.
-   * ────────────────────────────────────────────────────────────── */
+   * CSS 3D tilt (GSAP rotationX/Y on photoWrap) adds the physical card feel.
+   * Both effects share the same smoothed mouse values.
+   * ────────────────────────────────────────────────────────────────── */
   useEffect(() => {
-    const canvas = bgRef.current
-    if (!canvas) return
+    const canvas = photoRef.current
+    const wrap   = photoWrapRef.current
+    if (!canvas || !wrap) return
 
-    /* alpha: true so CSS mix-blend-mode: multiply composites correctly */
-    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false })
+    const gl = canvas.getContext('webgl', { alpha: false, premultipliedAlpha: false })
     if (!gl) return
 
     const VERT = `
@@ -139,52 +148,54 @@ export default function Section2() {
       }
     `
 
-    /*
-     * Fragment shader
-     *
-     * 1. Scale UV: image fills section height, tiles horizontally
-     * 2. Auto-scroll (u_time) + mouse nudge (u_mouseX) via fract()
-     * 3. Dual-frequency wave distortion (vertical)
-     * 4. Chromatic aberration ∝ wave peak
-     * 5. White edge vignettes → multiply with teal bg = seamless edges
-     */
     const FRAG = `
       precision highp float;
 
       varying   vec2      v_uv;
       uniform   sampler2D u_tex;
       uniform   float     u_time;
-      uniform   float     u_aspect;     /* canvas w/h          */
-      uniform   float     u_imgAspect;  /* image  w/h          */
-      uniform   float     u_mouseX;     /* lerped mouse -1..1  */
+      uniform   float     u_aspect;     /* canvas w/h  */
+      uniform   float     u_imgAspect;  /* image  w/h  */
+      uniform   vec2      u_mouse;      /* smooth -1..1 xy */
 
       void main() {
+        /* ── object-fit: cover ── */
         vec2 uv = v_uv;
+        if (u_aspect > u_imgAspect) {
+          float s = u_aspect / u_imgAspect;
+          uv.y = (uv.y - 0.5) * s + 0.5;
+        } else {
+          float s = u_imgAspect / u_aspect;
+          uv.x = (uv.x - 0.5) * s + 0.5;
+        }
 
-        /* Scale X so image fills height; fract() for seamless loop */
-        float scale   = u_aspect / u_imgAspect;
-        float scrollX = fract(uv.x * scale + u_time * 0.018 + u_mouseX * 0.035);
-        float scrollY = uv.y;
+        /* ── Mouse parallax — fake depth ── */
+        vec2 parallax = u_mouse * -0.022;
 
-        /* Dual-frequency vertical wave */
-        float wave = sin(scrollX * 9.0  + u_time * 0.65) * 0.5
-                   + sin(scrollX * 5.5  - u_time * 0.4 ) * 0.5;
-        scrollY = clamp(scrollY + wave * 0.009, 0.001, 0.999);
+        /* ── Subtle breathing wave ── */
+        float wave = sin(uv.x * 5.0 + u_time * 0.35) *
+                     sin(uv.y * 4.0 + u_time * 0.28) * 0.003;
 
-        /* Chromatic aberration tied to wave peak */
-        float aberr = abs(wave) * 0.005;
-        float r = texture2D(u_tex, vec2(scrollX + aberr, scrollY)).r;
-        float g = texture2D(u_tex, vec2(scrollX,         scrollY)).g;
-        float b = texture2D(u_tex, vec2(scrollX - aberr, scrollY)).b;
+        vec2 distUV = uv + parallax + vec2(wave);
+
+        /* ── Chromatic aberration — grows with mouse distance ── */
+        float aberrStr = length(u_mouse) * 0.006 + 0.0015;
+        vec2  aberrDir = normalize(u_mouse + vec2(0.0001, 0.0001));
+        float r = texture2D(u_tex, clamp(distUV + aberrDir * aberrStr,  0.001, 0.999)).r;
+        float g = texture2D(u_tex, clamp(distUV,                        0.001, 0.999)).g;
+        float b = texture2D(u_tex, clamp(distUV - aberrDir * aberrStr,  0.001, 0.999)).b;
         vec3 col = vec3(r, g, b);
 
-        /* Edge vignettes — fade to 0.5 gray.
-         * soft-light(0.5, any) = no change → edges vanish seamlessly. */
-        float hFade = smoothstep(0.0, 0.06, uv.x)
-                    * smoothstep(1.0, 0.94, uv.x);
-        float vFade = smoothstep(0.0, 0.04, uv.y)
-                    * smoothstep(1.0, 0.96, uv.y);
-        col = mix(vec3(0.5), col, hFade * vFade);
+        /* ── Vignette ── */
+        vec2  vigUV    = v_uv * 2.0 - 1.0;
+        float vignette = 1.0 - smoothstep(0.55, 1.3, length(vigUV * vec2(0.85, 1.0)));
+        col *= mix(0.55, 1.0, vignette);
+
+        /* ── Specular sheen — light spot follows mouse ── */
+        vec2  sheenUV  = v_uv - 0.5;
+        vec2  lightPos = u_mouse * 0.36;
+        float sheen    = pow(max(0.0, 1.0 - length(sheenUV - lightPos) * 2.4), 4.0) * 0.2;
+        col += sheen;
 
         gl_FragColor = vec4(col, 1.0);
       }
@@ -194,7 +205,7 @@ export default function Section2() {
       const s = gl.createShader(type)
       gl.shaderSource(s, src); gl.compileShader(s)
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
-        console.error('BG shader:', gl.getShaderInfoLog(s))
+        console.error('Photo shader:', gl.getShaderInfoLog(s))
       return s
     }
     const prog = gl.createProgram()
@@ -216,14 +227,14 @@ export default function Section2() {
     const uTime      = gl.getUniformLocation(prog, 'u_time')
     const uAspect    = gl.getUniformLocation(prog, 'u_aspect')
     const uImgAspect = gl.getUniformLocation(prog, 'u_imgAspect')
-    const uMouseX    = gl.getUniformLocation(prog, 'u_mouseX')
+    const uMouse     = gl.getUniformLocation(prog, 'u_mouse')
     gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0)
 
-    /* Texture — CLAMP_TO_EDGE required for non-power-of-2 images */
+    /* Texture — teal placeholder until image loads */
     const tex = gl.createTexture()
     gl.bindTexture(gl.TEXTURE_2D, tex)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([255, 255, 255, 255]))  /* white placeholder — invisible under multiply */
+      new Uint8Array([95, 134, 116, 255]))
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -239,7 +250,7 @@ export default function Section2() {
       imgAspect = img.naturalWidth / img.naturalHeight
     }
 
-    /* Resize: size canvas to section dimensions */
+    /* Resize canvas to its CSS size × dpr */
     const resize = () => {
       canvas.width  = canvas.offsetWidth  * devicePixelRatio
       canvas.height = canvas.offsetHeight * devicePixelRatio
@@ -248,37 +259,50 @@ export default function Section2() {
     resize()
     window.addEventListener('resize', resize)
 
-    /* Mouse X (shared with parallax, tracked independently) */
-    let mx = 0, cmx = 0
-    const onMove = (e) => { mx = (e.clientX / window.innerWidth - 0.5) * 2 }
+    /* Smooth mouse */
+    let mx = 0, my = 0, cmx = 0, cmy = 0
+    const onMove = (e) => {
+      mx = (e.clientX / window.innerWidth  - 0.5) * 2
+      my = (e.clientY / window.innerHeight - 0.5) * 2
+    }
     window.addEventListener('mousemove', onMove, { passive: true })
 
-    /* Render loop — pauses via visibleRef when off-screen */
+    /* Combined render + CSS tilt loop */
     let start = null
     const tick = (ts) => {
-      bgRafRef.current = requestAnimationFrame(tick)
+      photoRafRef.current = requestAnimationFrame(tick)
       if (!visibleRef.current) return
       if (!start) start = ts
       const t = (ts - start) * 0.001
 
+      /* Smooth mouse */
       cmx += (mx - cmx) * 0.05
+      cmy += (my - cmy) * 0.05
 
+      /* CSS 3D tilt on the photo wrap */
+      gsap.set(wrap, {
+        rotationX:           -cmy * 9,
+        rotationY:            cmx * 13,
+        transformPerspective: 1200,
+      })
+
+      /* WebGL draw */
       gl.uniform1f(uTime,      t)
       gl.uniform1f(uAspect,    canvas.width / canvas.height)
       gl.uniform1f(uImgAspect, imgAspect)
-      gl.uniform1f(uMouseX,    cmx)
+      gl.uniform2f(uMouse,     cmx, cmy)
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
     }
-    bgRafRef.current = requestAnimationFrame(tick)
+    photoRafRef.current = requestAnimationFrame(tick)
 
     return () => {
-      cancelAnimationFrame(bgRafRef.current)
+      cancelAnimationFrame(photoRafRef.current)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMove)
     }
   }, [])
 
-  /* ── Animated grain canvas ───────────────────────────────────── */
+  /* ── Grain canvas (hook kept, opacity 0 in CSS) ──────────────────── */
   useEffect(() => {
     const canvas = grainRef.current
     if (!canvas) return
@@ -316,12 +340,10 @@ export default function Section2() {
   return (
     <section ref={sectionRef} id="section-2" className={styles.section}>
 
-      {/* WebGL illustration — mix-blend-mode: multiply in CSS */}
-      <canvas ref={bgRef} className={styles.bgCanvas} aria-hidden="true" />
-
-      {/* Film grain overlay */}
+      {/* Film grain (hook kept, invisible) */}
       <canvas ref={grainRef} className={styles.grain} aria-hidden="true" />
 
+      {/* Text column */}
       <div className={styles.inner}>
 
         <p ref={locationRef} className={styles.label}>
@@ -350,6 +372,14 @@ export default function Section2() {
         </a>
 
       </div>
+
+      {/* Photo column */}
+      <div className={styles.photoCol}>
+        <div ref={photoWrapRef} className={styles.photoWrap}>
+          <canvas ref={photoRef} className={styles.photoCanvas} aria-hidden="true" />
+        </div>
+      </div>
+
     </section>
   )
 }

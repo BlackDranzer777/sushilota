@@ -1,19 +1,20 @@
 /*
  * navItems.js
  * Source of truth for the sidebar navigation.
- * Roman numerals map to scroll progress segments (each = 1/11 of hero scroll).
+ * Labels + hrefs must match the id= attributes on section elements.
  */
 
 export const NAV_ITEMS = [
-  { numeral: 'I',    label: 'Branding',          href: '#branding'    },
-  { numeral: 'II',   label: 'Packaging',          href: '#packaging'   },
-  { numeral: 'III',  label: 'SEO & SEM',          href: '#seo'         },
-  { numeral: 'IV',   label: 'Website Dev',        href: '#web'         },
-  { numeral: 'V',    label: 'Social Media',       href: '#social'      },
-  { numeral: 'VI',   label: 'Photography',        href: '#photography' },
-  { numeral: 'VII',  label: 'Offline Marketing',  href: '#offline'     },
-  { numeral: 'VIII', label: 'Design House',       href: '#design'      },
-  { numeral: 'IX',   label: 'PR',                 href: '#pr'          },
-  { numeral: 'X',    label: 'Consultancy',        href: '#consultancy' },
-  { numeral: 'XI',   label: 'Content Creation',   href: '#content'     },
+  { numeral: 'I',    label: 'About',         href: '#who-we-are'    },
+  { numeral: 'II',   label: 'Strategy',      href: '#strategy'      },
+  { numeral: 'III',  label: 'Why Us',        href: '#differentiation' },
+  { numeral: 'IV',   label: 'Objectives',    href: '#objectives'    },
+  { numeral: 'V',    label: 'Branding',      href: '#svc-branding'  },
+  { numeral: 'VI',   label: 'Website',       href: '#svc-website'   },
+  { numeral: 'VII',  label: 'Social',        href: '#svc-social'    },
+  { numeral: 'VIII', label: 'Content',       href: '#svc-content'   },
+  { numeral: 'IX',   label: 'SEO',           href: '#svc-seo'       },
+  { numeral: 'X',    label: 'Photography',   href: '#svc-photography' },
+  { numeral: 'XI',   label: 'PR',            href: '#svc-pr'        },
+  { numeral: 'XII',  label: 'Contact',       href: '#contact'       },
 ]

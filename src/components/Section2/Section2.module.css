@@ -1,60 +1,71 @@
 /*
  * Section2.module.css
- * Background matches ink color exactly (#5f8674) — seamless from hero ink.
+ * Two-column grid: text left (55%), 3D WebGL photo right (45%).
  */
 
+/* ─── Section grid ───────────────────────────────────────────────── */
 .section {
-  background: #5f8674;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 120px 80px 120px 220px;
-  position: relative;
-  overflow: hidden;
+  background:  #5f8674;
+  min-height:  100vh;
+  display:     grid;
+  grid-template-columns: 55% 45%;
+  position:    relative;
+  overflow:    hidden;
 }
 
-@media (max-width: 768px) {
-  .section {
-    padding: 80px 28px 100px 28px;
-    align-items: flex-start;
-  }
-}
-
-/* ─── Full-section illustration canvas (mix-blend-mode: multiply) ── */
-/*     White areas in illustration × teal bg = teal → seamless blend  */
-.bgCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  mix-blend-mode: soft-light;
-  opacity: 0.55;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ─── Animated grain canvas ──────────────────────────────────────── */
+/* ─── Film grain (hook kept, invisible) ──────────────────────────── */
 .grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  position:        absolute;
+  inset:           0;
+  width:           100%;
+  height:          100%;
   image-rendering: pixelated;
-  opacity: 0.055;
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-  z-index: 1;
+  opacity:         0; /* disabled — hook kept for later use */
+  mix-blend-mode:  soft-light;
+  pointer-events:  none;
+  z-index:         1;
 }
 
-/* ─── Content sits above the bg and grain ────────────────────────── */
+/* ─── Text column ────────────────────────────────────────────────── */
 .inner {
-  position: relative;
-  z-index: 2;
-  max-width: 780px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+  position:        relative;
+  z-index:         2;
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding:         120px 60px 120px 220px;
+  gap:             28px;
+}
+
+/* ─── Photo column ───────────────────────────────────────────────── */
+.photoCol {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         80px 72px 80px 16px;
+  position:        relative;
+  z-index:         2;
+}
+
+/* Photo frame — deep shadow gives physical presence */
+.photoWrap {
+  position:   relative;
+  width:       82%;
+  max-width:   420px;
+  border-radius: 6px;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.5),
+    0 10px 30px  rgba(0, 0, 0, 0.3),
+    0 0 0 1px    rgba(255, 255, 255, 0.07);
+  will-change: transform;
+  overflow:    hidden;
+}
+
+/* WebGL canvas — fills the frame, portrait crop */
+.photoCanvas {
+  display:      block;
+  width:        100%;
+  aspect-ratio: 3 / 4;
 }
 
 /* ─── Split-line clip container ──────────────────────────────────── */
@@ -64,73 +75,80 @@
 
 /* ─── Label ──────────────────────────────────────────────────────── */
 .label {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--text-label);
-  font-weight: 600;
+  display:        block;
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--peach-light);
-  opacity: 0.7;
+  color:          var(--peach-light);
+  opacity:        0.7;
 }
 
 /* ─── Heading ────────────────────────────────────────────────────── */
 .heading {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  gap: 0;
-  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
-  font-weight: 600;
-  line-height: 1.08;
+  gap:            0;
+  font-size:      clamp(2.8rem, 5.5vw, 5.2rem);
+  font-weight:    600;
+  line-height:    1.08;
   letter-spacing: -0.02em;
 }
 
 .headingLine {
-  display: block;
+  display:     block;
   font-family: var(--font-display);
-  color: var(--white);
+  color:       var(--white);
 }
 
 /* ─── Body ───────────────────────────────────────────────────────── */
 .body {
   font-family: var(--font-body);
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-size:   clamp(1rem, 1.4vw, 1.15rem);
   line-height: 1.75;
-  color: rgba(255, 255, 255, 0.65);
-  max-width: 560px;
+  color:       rgba(255, 255, 255, 0.65);
+  max-width:   480px;
 }
 
 /* ─── CTA pill ───────────────────────────────────────────────────── */
 .cta {
-  display: inline-flex;
-  align-items: center;
-  padding: 14px 36px;
-  background: #E6D2C3;
-  color: var(--dark);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
+  display:        inline-flex;
+  align-items:    center;
+  padding:        14px 36px;
+  background:     #E6D2C3;
+  color:          var(--dark);
+  font-family:    var(--font-body);
+  font-size:      0.9rem;
+  font-weight:    600;
   letter-spacing: 0.02em;
-  border-radius: var(--radius-pill);
-  align-self: flex-start;
-  margin-top: 8px;
-  transition: opacity 0.2s ease;
+  border-radius:  var(--radius-pill);
+  align-self:     flex-start;
+  margin-top:     8px;
+  transition:     opacity 0.2s ease;
 }
 
 .cta:hover {
   opacity: 0.88;
 }
 
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .inner    { padding: 100px 48px 100px 160px; }
+}
+
+@media (max-width: 1024px) {
+  .section  { grid-template-columns: 1fr; }
+  .inner    { padding: 80px 48px 40px 160px; }
+  .photoCol { padding: 32px 48px 80px; }
+  .photoWrap { max-width: 360px; }
+}
+
 @media (max-width: 768px) {
-  .inner {
-    gap: 20px;
-  }
-
-  .heading {
-    font-size: clamp(2.4rem, 11vw, 3.2rem);
-  }
-
-  .body {
-    font-size: 0.97rem;
-  }
+  .section  { grid-template-columns: 1fr; }
+  .inner    { padding: 80px 28px 32px 28px; gap: 20px; }
+  .photoCol { padding: 24px 28px 80px; }
+  .photoWrap { width: 72%; max-width: 280px; }
+  .heading  { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+  .body     { font-size: 0.97rem; }
 }

@@ -190,7 +190,7 @@ export default function CursorLens() {
             id="cursor-lens"
             filterUnits="userSpaceOnUse"
             x="0" y="0"
-            width="5000" height="15000"
+            width="5000" height="80000"
             colorInterpolationFilters="sRGB"
           >
             {/* Neutral gray everywhere — zero displacement baseline */}

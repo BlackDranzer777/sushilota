@@ -13,6 +13,7 @@
   left: 28px;
   bottom: 48px;
   z-index: var(--z-nav);
+  mix-blend-mode: difference;
 }
 
 .list {
@@ -27,7 +28,7 @@
   align-items: baseline;
   gap: 32px;
   padding: 3px 0;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.55);
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 400;
@@ -35,19 +36,16 @@
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.25s ease;
-  text-shadow:
-    0 1px 6px rgba(0, 0, 0, 0.6),
-    0 0   14px rgba(0, 0, 0, 0.35);
 }
 
 .item:hover {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* ─── Active state ───────────────────────────────────────────────── */
 .active {
-  color: var(--white);
-  font-weight: 500;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 /* ─── Label + numeral ────────────────────────────────────────────── */

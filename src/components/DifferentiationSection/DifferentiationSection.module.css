@@ -1,0 +1,126 @@
+/*
+ * DifferentiationSection.module.css
+ *
+ * .outer    — 500vh tall. Provides the scroll travel distance.
+ * .sticky   — position: sticky, pins for the scroll travel.
+ * .track    — horizontal flex row that translates left.
+ * .panel    — each 100vw × 100vh panel.
+ */
+
+/* ─── Outer scroll container ─────────────────────────────────────── */
+.outer {
+  position:   relative;
+  height:     500vh;
+  /* Prevents body's dark bg (#0a1a18) bleeding through before sticky activates */
+  background: #F6EDD8;
+}
+
+/* Floating section label */
+.stickyLabel {
+  position:   sticky;
+  top:        32px;
+  z-index:    20;
+  display:    flex;
+  gap:        12px;
+  padding:    0 220px;
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color:      rgba(10, 26, 24, 0.4);
+  pointer-events: none;
+}
+
+/* ─── Sticky viewport frame ──────────────────────────────────────── */
+.sticky {
+  position:   sticky;
+  top:        0;
+  height:     100vh;
+  overflow:   hidden;
+}
+
+/* ─── Horizontal track ───────────────────────────────────────────── */
+.track {
+  display:    flex;
+  height:     100%;
+  will-change: transform;
+}
+
+/* ─── Individual panel ───────────────────────────────────────────── */
+.panel {
+  flex-shrink:     0;
+  width:           100vw;
+  height:          100vh;
+  background:      var(--panel-bg, #F6EDD8);
+  color:           var(--panel-text, #0a1a18);
+  display:         grid;
+  grid-template-columns: 50% 50%;
+  overflow:        hidden;
+}
+
+/* ─── Text half ──────────────────────────────────────────────────── */
+.panelText {
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding:         80px 64px 80px 120px;
+  gap:             24px;
+}
+
+.panelNum {
+  font-family:    var(--font-body);
+  font-size:      var(--text-label);
+  font-weight:    600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity:        0.4;
+}
+
+.panelTitle {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.8rem, 4.5vw, 5.2rem);
+  font-weight:    600;
+  line-height:    1.04;
+  letter-spacing: -0.025em;
+  margin:         0;
+}
+
+.panelBody {
+  font-family: var(--font-body);
+  font-size:   clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.78;
+  opacity:     0.65;
+  max-width:   420px;
+}
+
+/* ─── Image half ─────────────────────────────────────────────────── */
+.panelVisual {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  overflow:        hidden;
+  padding:         60px;
+}
+
+.panelImg {
+  max-width:  88%;
+  max-height: 78vh;
+  object-fit: contain;
+  display:    block;
+  will-change: transform;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .panel     { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .panelText { padding: 60px 48px 32px; justify-content: flex-end; }
+  .panelVisual { padding: 32px 48px; }
+  .stickyLabel { padding: 0 48px; }
+}
+
+@media (max-width: 768px) {
+  .stickyLabel { display: none; }
+  .panelText { padding: 48px 28px 24px; gap: 16px; }
+  .panelTitle { font-size: clamp(2.2rem, 10vw, 3rem); }
+  .panelVisual { padding: 16px 28px 48px; }
+}
