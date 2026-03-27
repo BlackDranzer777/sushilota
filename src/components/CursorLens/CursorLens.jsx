@@ -28,7 +28,7 @@
 import { useEffect, useRef } from 'react'
 
 const RADIUS = 100   /* lens radius in CSS px                           */
-const SCALE  = 30    /* feDisplacementMap scale — distortion strength   */
+const SCALE  = 14    /* feDisplacementMap scale — distortion strength   */
 const D      = RADIUS * 2
 
 export default function CursorLens() {

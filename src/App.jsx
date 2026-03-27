@@ -12,7 +12,7 @@ import { useLenis }               from './hooks/useLenis'
 
 import TopBar                     from './components/TopBar/TopBar'
 import SideNav                    from './components/SideNav/SideNav'
-import CursorLens                 from './components/CursorLens/CursorLens'
+import CursorPaint                from './components/CursorPaint/CursorPaint'
 
 /* ── Hero (pick one) ─────────────────────────────────────────────── */
 import CinematicHero              from './components/CinematicHero/CinematicHero'
@@ -35,13 +35,13 @@ export default function App() {
 
   return (
     <>
-      <CursorLens />
+      <CursorPaint />
       <TopBar />
       <SideNav />
 
       {/* filter: url(#cursor-lens) — warps pixels inside <main> at cursor.
           TopBar + SideNav stay outside to avoid breaking fixed stacking. */}
-      <main style={{ filter: 'url(#cursor-lens)' }}>
+      <main>
 
         {/* ── Hero (choose A or B) ────────────────────────────────── */}
         {/* OPTION A — WebGL cinematic ink experience */}

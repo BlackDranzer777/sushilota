@@ -1,154 +1,296 @@
 /*
- * Section2.module.css
- * Two-column grid: text left (55%), 3D WebGL photo right (45%).
+ * Section2.module.css — Stamp Zoom
+ *
+ * KEY ARCHITECTURE CHANGE — Inverted scale for crisp quality:
+ *   .shell is 100vw wide (renders at full resolution).
+ *   GSAP scales it DOWN to stamp size at start, then back to scale(1).
+ *   CSS variable --inv (set by JS = viewport / STAMP_W) compensates all
+ *   stamp decorations so they appear at the correct pixel size when small.
+ *
+ * .travel   — 250vh scroll container
+ * .sticky   — 100vh pinned scene
+ * .shell    — full viewport width, scaled down → up via GSAP
+ * .clipBox  — overflow: hidden, clips the illustration
+ * .borderOverlay — perforated stamp frame, sizes via --inv, fades out
+ * .foot     — white denomination row, sizes via --inv, fades with border
+ * .postmark — ink circle, sizes via --inv, fades with border
+ * .leftOverlay — dark gradient, fades IN as stamp reveals
+ * .content  — text block, enters from bottom-right
  */
 
-/* ─── Section grid ───────────────────────────────────────────────── */
-.section {
-  background:  #5f8674;
-  min-height:  100vh;
-  display:     grid;
-  grid-template-columns: 55% 45%;
-  position:    relative;
-  overflow:    hidden;
+/* ─── Scroll travel container ────────────────────────────────────── */
+.travel {
+  position:   relative;
+  height:     250vh;
 }
 
-/* ─── Film grain (hook kept, invisible) ──────────────────────────── */
-.grain {
-  position:        absolute;
-  inset:           0;
-  width:           100%;
-  height:          100%;
-  image-rendering: pixelated;
-  opacity:         0; /* disabled — hook kept for later use */
-  mix-blend-mode:  soft-light;
-  pointer-events:  none;
-  z-index:         1;
-}
-
-/* ─── Text column ────────────────────────────────────────────────── */
-.inner {
-  position:        relative;
-  z-index:         2;
-  display:         flex;
-  flex-direction:  column;
-  justify-content: center;
-  padding:         120px 60px 120px 220px;
-  gap:             28px;
-}
-
-/* ─── Photo column ───────────────────────────────────────────────── */
-.photoCol {
-  display:         flex;
+/* ─── Sticky viewport ────────────────────────────────────────────── */
+.sticky {
+  position:   sticky;
+  top:        0;
+  height:     100vh;
+  overflow:   hidden;
+  background: #080f0d;
+  display:    flex;
   align-items:     center;
   justify-content: center;
-  padding:         80px 72px 80px 16px;
-  position:        relative;
-  z-index:         2;
 }
 
-/* Photo frame — deep shadow gives physical presence */
-.photoWrap {
-  position:   relative;
-  width:       82%;
-  max-width:   420px;
-  border-radius: 6px;
-  box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.5),
-    0 10px 30px  rgba(0, 0, 0, 0.3),
-    0 0 0 1px    rgba(255, 255, 255, 0.07);
+/* ─── Stamp shell — full viewport width, inverted-scale approach ─── */
+/*
+ * Width = 100vw so the image renders at full resolution.
+ * Height = 100vw × (2/3) — exact 3:2 aspect ratio of the artwork.
+ * GSAP sets initial scale = STAMP_W / window.innerWidth (appears as a small stamp).
+ * On scroll, animates to scale = 1 (fills viewport).
+ * CSS variable --inv = 1 / initialScale so decorations appear at stamp size.
+ */
+.shell {
+  position:    absolute;
+  left:        50%;
+  top:         50%;
+  width:       100vw;
+  height:      calc(100vw * 2 / 3);
   will-change: transform;
-  overflow:    hidden;
 }
 
-/* WebGL canvas — fills the frame, portrait crop */
-.photoCanvas {
-  display:      block;
-  width:        100%;
-  aspect-ratio: 3 / 4;
+/* ─── Image clip layer ────────────────────────────────────────────── */
+.clipBox {
+  position:      absolute;
+  inset:         0;
+  overflow:      hidden;
+  border-radius: calc(3px * var(--inv, 5.58));
 }
 
-/* ─── Split-line clip container ──────────────────────────────────── */
+.img {
+  display:    block;
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+}
+
+/* ─── Stamp border overlay ───────────────────────────────────────── */
+/*
+ * All pixel values scaled by --inv so they appear correct at stamp size.
+ * box-shadow inset ring, mask perforations, border-radius all compensated.
+ */
+.borderOverlay {
+  position:   absolute;
+  inset:      0;
+  z-index:    2;
+  background: transparent;
+  box-shadow: inset 0 0 0 calc(12px * var(--inv, 5.58)) #fff;
+  border-radius: calc(3px * var(--inv, 5.58));
+  pointer-events: none;
+
+  mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle at 50% 0%,    transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 50% 100%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 0%   50%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 100% 50%,  transparent 4.5px, #000 4.5px);
+  mask-size:
+    calc(100% - 10px * var(--inv, 5.58)) calc(100% - 10px * var(--inv, 5.58)),
+    calc(13px * var(--inv, 5.58)) calc(5px * var(--inv, 5.58)),
+    calc(13px * var(--inv, 5.58)) calc(5px * var(--inv, 5.58)),
+    calc(5px  * var(--inv, 5.58)) calc(13px * var(--inv, 5.58)),
+    calc(5px  * var(--inv, 5.58)) calc(13px * var(--inv, 5.58));
+  mask-position:  center, top, bottom, left, right;
+  mask-repeat:    no-repeat, repeat-x, repeat-x, repeat-y, repeat-y;
+
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle at 50% 0%,    transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 50% 100%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 0%   50%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 100% 50%,  transparent 4.5px, #000 4.5px);
+  -webkit-mask-size:
+    calc(100% - 10px * var(--inv, 5.58)) calc(100% - 10px * var(--inv, 5.58)),
+    calc(13px * var(--inv, 5.58)) calc(5px * var(--inv, 5.58)),
+    calc(13px * var(--inv, 5.58)) calc(5px * var(--inv, 5.58)),
+    calc(5px  * var(--inv, 5.58)) calc(13px * var(--inv, 5.58)),
+    calc(5px  * var(--inv, 5.58)) calc(13px * var(--inv, 5.58));
+  -webkit-mask-position:  center, top, bottom, left, right;
+  -webkit-mask-repeat:    no-repeat, repeat-x, repeat-x, repeat-y, repeat-y;
+
+  filter:
+    drop-shadow(0 8px 28px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 2px 6px  rgba(0, 0, 0, 0.35));
+}
+
+/* ─── Denomination foot ──────────────────────────────────────────── */
+.foot {
+  position:        absolute;
+  bottom:          0;
+  left:            0;
+  right:           0;
+  height:          calc(30px * var(--inv, 5.58));
+  background:      #fff;
+  z-index:         3;
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         0 calc(10px * var(--inv, 5.58));
+  pointer-events:  none;
+  border-radius:   0 0 calc(3px * var(--inv, 5.58)) calc(3px * var(--inv, 5.58));
+}
+
+.footVal {
+  font-family:    var(--font-body);
+  font-size:      calc(0.5rem * var(--inv, 5.58));
+  font-weight:    600;
+  letter-spacing: 0.08em;
+  color:          #1a1a1a;
+  text-transform: uppercase;
+}
+
+.footCountry {
+  font-family:    var(--font-body);
+  font-size:      calc(0.5rem * var(--inv, 5.58));
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  color:          #1a1a1a;
+  text-transform: uppercase;
+}
+
+/* ─── Postmark ───────────────────────────────────────────────────── */
+.postmark {
+  position:       absolute;
+  top:            8%;
+  right:          5%;
+  width:          calc(52px * var(--inv, 5.58));
+  height:         calc(52px * var(--inv, 5.58));
+  border-radius:  50%;
+  border:         calc(1.5px * var(--inv, 5.58)) solid rgba(20, 20, 20, 0.22);
+  box-shadow:     0 0 0 calc(3px * var(--inv, 5.58)) rgba(20, 20, 20, 0.07);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index:        4;
+}
+
+.postmark::before {
+  content:      '';
+  position:     absolute;
+  inset:        calc(8px * var(--inv, 5.58));
+  border-radius: 50%;
+  border:       calc(1px * var(--inv, 5.58)) solid rgba(20, 20, 20, 0.15);
+}
+
+.postmark::after {
+  content:        'JAIPUR';
+  position:       absolute;
+  top:            50%;
+  left:           50%;
+  transform:      translate(-50%, -50%) rotate(-18deg);
+  font-family:    var(--font-body);
+  font-size:      calc(0.36rem * var(--inv, 5.58));
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  color:          rgba(20, 20, 20, 0.28);
+  text-transform: uppercase;
+  white-space:    nowrap;
+}
+
+/* ─── Left gradient ─────────────────────────────────────────────── */
+.leftOverlay {
+  position: absolute;
+  inset:    0;
+  z-index:  5;
+  background:
+    linear-gradient(
+      to right,
+      rgba(4, 10, 8, 0.90)  0%,
+      rgba(4, 10, 8, 0.60)  30%,
+      rgba(4, 10, 8, 0.15)  55%,
+      transparent           75%
+    );
+  pointer-events: none;
+}
+
+/* ─── Text content ───────────────────────────────────────────────── */
+.content {
+  position:        absolute;
+  left:            220px;
+  bottom:          80px;
+  z-index:         10;
+  display:         flex;
+  flex-direction:  column;
+  gap:             22px;
+  max-width:       520px;
+  pointer-events:  none;
+}
+
 .lineWrap {
-  display: block;
+  display:  block;
+  overflow: hidden;
 }
 
-/* ─── Label ──────────────────────────────────────────────────────── */
 .label {
-  display:        block;
   font-family:    var(--font-body);
   font-size:      var(--text-label);
   font-weight:    600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color:          var(--peach-light);
-  opacity:        0.7;
+  color:          rgba(246, 237, 216, 0.48);
 }
 
-/* ─── Heading ────────────────────────────────────────────────────── */
 .heading {
   display:        flex;
   flex-direction: column;
-  gap:            0;
-  font-size:      clamp(2.8rem, 5.5vw, 5.2rem);
-  font-weight:    600;
-  line-height:    1.08;
-  letter-spacing: -0.02em;
+  margin:         0;
 }
 
 .headingLine {
-  display:     block;
-  font-family: var(--font-display);
-  color:       var(--white);
+  display:        block;
+  font-family:    var(--font-display);
+  font-size:      clamp(2.8rem, 5vw, 5.2rem);
+  font-weight:    600;
+  line-height:    1.05;
+  letter-spacing: -0.028em;
+  color:          #F6EDD8;
 }
 
-/* ─── Body ───────────────────────────────────────────────────────── */
 .body {
   font-family: var(--font-body);
-  font-size:   clamp(1rem, 1.4vw, 1.15rem);
-  line-height: 1.75;
-  color:       rgba(255, 255, 255, 0.65);
-  max-width:   480px;
+  font-size:   clamp(0.92rem, 1.2vw, 1.05rem);
+  line-height: 1.76;
+  color:       rgba(246, 237, 216, 0.58);
+  max-width:   440px;
 }
 
-/* ─── CTA pill ───────────────────────────────────────────────────── */
 .cta {
   display:        inline-flex;
   align-items:    center;
-  padding:        14px 36px;
-  background:     #E6D2C3;
-  color:          var(--dark);
+  padding:        13px 34px;
+  background:     #F6EDD8;
+  color:          #0a1a18;
   font-family:    var(--font-body);
-  font-size:      0.9rem;
+  font-size:      0.88rem;
   font-weight:    600;
   letter-spacing: 0.02em;
   border-radius:  var(--radius-pill);
   align-self:     flex-start;
-  margin-top:     8px;
-  transition:     opacity 0.2s ease;
+  pointer-events: all;
+  transition:     opacity 0.2s ease, transform 0.2s ease;
 }
 
 .cta:hover {
-  opacity: 0.88;
+  opacity:   0.88;
+  transform: translateY(-2px);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 1200px) {
-  .inner    { padding: 100px 48px 100px 160px; }
+  .content { left: 120px; }
 }
 
 @media (max-width: 1024px) {
-  .section  { grid-template-columns: 1fr; }
-  .inner    { padding: 80px 48px 40px 160px; }
-  .photoCol { padding: 32px 48px 80px; }
-  .photoWrap { max-width: 360px; }
+  .content { left: 64px; bottom: 60px; }
 }
 
 @media (max-width: 768px) {
-  .section  { grid-template-columns: 1fr; }
-  .inner    { padding: 80px 28px 32px 28px; gap: 20px; }
-  .photoCol { padding: 24px 28px 80px; }
-  .photoWrap { width: 72%; max-width: 280px; }
-  .heading  { font-size: clamp(2.4rem, 11vw, 3.2rem); }
-  .body     { font-size: 0.97rem; }
+  .travel      { height: 100vh; }
+  .content     { left: 28px; bottom: 48px; max-width: 90vw; gap: 14px; }
+  .headingLine { font-size: clamp(2.2rem, 10vw, 3rem); }
+  .leftOverlay { opacity: 1 !important; }
+  .content     { opacity: 1 !important; transform: none !important; }
 }

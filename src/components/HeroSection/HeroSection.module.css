@@ -1,8 +1,8 @@
 /*
  * HeroSection.module.css
  *
- * Dark-canvas collage hero. Two mix-bg illustrations float at
- * opposite corners; large serif headline sits at centre.
+ * Dark-canvas hero. Large serif headline centred.
+ * Five postal stamps float in a scattered cluster below the subtitle.
  */
 
 /* ─── Canvas ─────────────────────────────────────────────────────── */
@@ -29,43 +29,14 @@
   z-index:    1;
 }
 
-/* ─── Collage images ─────────────────────────────────────────────── */
-.collage {
-  position:     absolute;
-  will-change:  transform;
-  z-index:      2;
-}
-
-.collage img {
-  display:    block;
-  width:      100%;
-  object-fit: contain;
-}
-
-.collage1 {
-  width:   clamp(280px, 38vw, 560px);
-  top:     -6%;
-  left:    -3%;
-  opacity: 0;
-  filter:  saturate(0.7) brightness(0.75);
-  mix-blend-mode: luminosity;
-}
-
-.collage2 {
-  width:   clamp(200px, 26vw, 400px);
-  bottom:  -4%;
-  right:   -2%;
-  opacity: 0;
-  filter:  saturate(0.7) brightness(0.75);
-  mix-blend-mode: luminosity;
-}
-
 /* ─── Centre content ─────────────────────────────────────────────── */
 .center {
   position:   relative;
   z-index:    10;
   text-align: center;
   padding:    0 24px;
+  /* Shift upward slightly to leave visual room for stamps below */
+  margin-top: -80px;
 }
 
 .eyebrow {
@@ -95,6 +66,165 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color:          rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Stamps cluster ─────────────────────────────────────────────── */
+/*
+ * Zero-size anchor point at the centre-bottom of the viewport.
+ * Each stamp is absolutely positioned relative to this anchor
+ * using CSS custom properties --tx / --ty / --rot.
+ */
+.stampsCluster {
+  position:       absolute;
+  left:           50%;
+  top:            72%;
+  width:          0;
+  height:         0;
+  z-index:        4;
+  pointer-events: none;        /* cluster itself is invisible */
+}
+
+.stampOuter {
+  position:       absolute;
+  left:           0;
+  top:            0;
+  transform:      translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot));
+  will-change:    transform;
+  cursor:         pointer;
+  pointer-events: all;
+}
+
+/* ─── Stamp card ─────────────────────────────────────────────────── */
+/*
+ * White card with perforated edges via CSS mask-image.
+ * drop-shadow is applied AFTER the mask, so it follows the
+ * perforated silhouette exactly.
+ *
+ * Mask layers (composited with "add" / union):
+ *   1. Solid centre fill  — covers interior, leaves 5px border zone
+ *   2. Top perf strip     — 13×5px tiles, transparent circles at top
+ *   3. Bottom perf strip
+ *   4. Left perf strip    — 5×13px tiles, transparent circles at left
+ *   5. Right perf strip
+ */
+.stamp {
+  position:   relative;
+  width:       162px;
+  background:  #fff;
+  padding:     10px 10px 0;
+
+  /* Standard mask */
+  mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle at 50% 0%,    transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 50% 100%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 0%   50%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 100% 50%,  transparent 4.5px, #000 4.5px);
+  mask-size:
+    calc(100% - 10px) calc(100% - 10px),
+    13px 5px,
+    13px 5px,
+    5px 13px,
+    5px 13px;
+  mask-position:  center, top, bottom, left, right;
+  mask-repeat:    no-repeat, repeat-x, repeat-x, repeat-y, repeat-y;
+
+  /* WebKit mask (Safari) */
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    radial-gradient(circle at 50% 0%,    transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 50% 100%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 0%   50%,  transparent 4.5px, #000 4.5px),
+    radial-gradient(circle at 100% 50%,  transparent 4.5px, #000 4.5px);
+  -webkit-mask-size:
+    calc(100% - 10px) calc(100% - 10px),
+    13px 5px,
+    13px 5px,
+    5px 13px,
+    5px 13px;
+  -webkit-mask-position:  center, top, bottom, left, right;
+  -webkit-mask-repeat:    no-repeat, repeat-x, repeat-x, repeat-y, repeat-y;
+
+  /* Shadow follows perforated silhouette */
+  filter:
+    drop-shadow(0 6px 22px rgba(0, 0, 0, 0.58))
+    drop-shadow(0 2px 5px  rgba(0, 0, 0, 0.30));
+}
+
+/* ─── Image ──────────────────────────────────────────────────────── */
+.stampImg {
+  display:      block;
+  width:        100%;
+  aspect-ratio: 1 / 1;
+  object-fit:   cover;
+}
+
+/* ─── Stamp foot (denomination row) ─────────────────────────────── */
+.stampFoot {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         5px 2px 8px;
+}
+
+.stampVal {
+  font-family:    var(--font-body);
+  font-size:      0.5rem;
+  font-weight:    600;
+  letter-spacing: 0.08em;
+  color:          #1a1a1a;
+  text-transform: uppercase;
+}
+
+.stampCountry {
+  font-family:    var(--font-body);
+  font-size:      0.5rem;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  color:          #1a1a1a;
+  text-transform: uppercase;
+}
+
+/* ─── Postmark overlay ───────────────────────────────────────────── */
+/*
+ * Faded ink circle in the upper-right of the stamp.
+ * mix-blend-mode: multiply → darkens white background like real ink.
+ * ::before inner ring + ::after "JAIPUR" text.
+ */
+.postmark {
+  position:       absolute;
+  top:            12%;
+  right:          6%;
+  width:          52px;
+  height:         52px;
+  border-radius:  50%;
+  border:         1.5px solid rgba(20, 20, 20, 0.22);
+  box-shadow:     0 0 0 3px rgba(20, 20, 20, 0.07);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.postmark::before {
+  content:      '';
+  position:     absolute;
+  inset:        8px;
+  border-radius: 50%;
+  border:       1px solid rgba(20, 20, 20, 0.16);
+}
+
+.postmark::after {
+  content:        'JAIPUR';
+  position:       absolute;
+  top:            50%;
+  left:           50%;
+  transform:      translate(-50%, -50%) rotate(-18deg);
+  font-family:    var(--font-body);
+  font-size:      0.36rem;
+  font-weight:    700;
+  letter-spacing: 0.16em;
+  color:          rgba(20, 20, 20, 0.3);
+  text-transform: uppercase;
+  white-space:    nowrap;
 }
 
 /* ─── Scroll hint ────────────────────────────────────────────────── */
@@ -135,16 +265,11 @@
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .stampsCluster { display: none; }
+  .center        { margin-top: 0; }
+}
+
 @media (max-width: 768px) {
-  .collage1 {
-    width: clamp(180px, 62vw, 300px);
-    top:   4%;
-    left:  -10%;
-  }
-  .collage2 {
-    width:  clamp(140px, 48vw, 220px);
-    bottom: 7%;
-    right:  -7%;
-  }
   .headline { font-size: clamp(3rem, 13vw, 4.8rem); }
 }

@@ -1,15 +1,16 @@
 /*
  * HeroSection.jsx
  *
- * Collage-style hero — distinct from CinematicHero's WebGL ink effect.
+ * Collage-style hero with five floating postal stamps below the headline.
  *
- * LAYOUT:  Full-screen dark canvas with two illustrations floating
- *          at the periphery (mix-bg). Headline centred.
+ * LAYOUT:  Full-screen dark canvas. Headline centred.
+ *          Five stamps clustered below the subtitle — scattered, overlapping,
+ *          like a handful dropped on a desk.
  *
  * ANIMATIONS:
- *   • Entrance: images scale+fade in, headline + subtitle slide up.
- *   • Scroll parallax: each image moves at a different speed (scrub).
- *   • Mouse parallax: images shift on cursor position (rAF loop).
+ *   • Entrance: headline + subtitle slide up; stamps pop in staggered.
+ *   • Float:    each stamp oscillates y independently (GSAP repeat/yoyo).
+ *   • Hover:    stamp lifts, flattens rotation, shadow deepens.
  */
 
 import { useEffect, useRef } from 'react'
@@ -19,106 +20,148 @@ import styles                from './HeroSection.module.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const IMG_1 = '/assets/mix-bg/Untitled_Artwork 2.png'
-const IMG_2 = '/assets/mix-bg/Untitled_Artwork 14.png'
+/* ── Stamp definitions ────────────────────────────────────────────── */
+const STAMPS = [
+  {
+    img:      '/assets/mix-bg/Untitled_Artwork 14.png',
+    rot:      -5,
+    x:        12,
+    y:        48,
+    floatAmp: 6,
+    floatDur: 5.0,
+    delay:    0.0,
+    zIndex:   1,           /* bottom of the pile */
+  },
+  {
+    img:      '/assets/mix-bg/Untitled_Artwork 2.png',
+    rot:      -7,
+    x:        -195,
+    y:        10,
+    floatAmp: 9,
+    floatDur: 3.8,
+    delay:    0.08,
+    zIndex:   3,
+  },
+  {
+    img:      '/assets/pink-bg/Untitled_Artwork 6.png',
+    rot:      8,
+    x:        205,
+    y:        -8,
+    floatAmp: 8,
+    floatDur: 4.1,
+    delay:    0.18,
+    zIndex:   2,
+  },
+  {
+    img:      '/assets/orange-bg/Untitled_Artwork 3.png',
+    rot:      -2,
+    x:        88,
+    y:        22,
+    floatAmp: 11,
+    floatDur: 3.5,
+    delay:    0.3,
+    zIndex:   4,
+  },
+  {
+    img:      '/assets/teal-bg/Untitled_Artwork 1.png',
+    rot:      4,
+    x:        -52,
+    y:        -22,
+    floatAmp: 7,
+    floatDur: 4.4,
+    delay:    0.42,
+    zIndex:   5,           /* top of the pile */
+  },
+]
 
 export default function HeroSection() {
   const sectionRef    = useRef(null)
-  const img1Ref       = useRef(null)
-  const img2Ref       = useRef(null)
   const eyebrowRef    = useRef(null)
   const headRef       = useRef(null)
   const subtitleRef   = useRef(null)
   const scrollHintRef = useRef(null)
-  const mouseRafRef   = useRef(null)
 
-  /* ── Entrance animation ─────────────────────────────────────────── */
+  /* One ref per stamp — outer wrapper (rotation + scale) */
+  const outerRefs   = useRef([])
+  /* Inner wrapper — y float */
+  const innerRefs   = useRef([])
+  /* Stored float tweens so we can pause/resume on hover */
+  const floatTweens = useRef([])
+
+  /* ── Entrance + floating loops ──────────────────────────────────── */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set([img1Ref.current, img2Ref.current], { opacity: 0, scale: 1.08 })
-      gsap.set([eyebrowRef.current, headRef.current, subtitleRef.current], { opacity: 0, y: 32 })
+      gsap.set(outerRefs.current,  { opacity: 0, scale: 0.78 })
+      gsap.set(
+        [eyebrowRef.current, headRef.current, subtitleRef.current],
+        { opacity: 0, y: 32 },
+      )
       gsap.set(scrollHintRef.current, { opacity: 0 })
 
-      gsap.timeline({ delay: 0.4 })
-        .to([img1Ref.current, img2Ref.current], {
+      /* Text entrance */
+      const tl = gsap.timeline({ delay: 0.3 })
+      tl.to(eyebrowRef.current,   { opacity: 1, y: 0, duration: 0.7,  ease: 'power3.out' })
+        .to(headRef.current,      { opacity: 1, y: 0, duration: 0.9,  ease: 'power3.out' }, '-=0.45')
+        .to(subtitleRef.current,  { opacity: 1, y: 0, duration: 0.7,  ease: 'power3.out' }, '-=0.5')
+        .to(scrollHintRef.current,{ opacity: 1,        duration: 0.6               }, '-=0.3')
+
+      /* Stamps pop in staggered */
+      STAMPS.forEach((s, i) => {
+        tl.to(outerRefs.current[i], {
           opacity: 1, scale: 1,
-          duration: 1.6, ease: 'power3.out', stagger: 0.2,
+          duration: 0.65, ease: 'back.out(1.4)',
+        }, 0.5 + s.delay)
+      })
+
+      /* Floating loops — start after each stamp enters */
+      STAMPS.forEach((s, i) => {
+        const tw = gsap.to(innerRefs.current[i], {
+          y:        s.floatAmp,
+          duration: s.floatDur,
+          ease:     'sine.inOut',
+          repeat:   -1,
+          yoyo:     true,
+          delay:    1.1 + s.delay,
         })
-        .to(eyebrowRef.current, {
-          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        }, '-=1.0')
-        .to(headRef.current, {
-          opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        }, '-=0.55')
-        .to(subtitleRef.current, {
-          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        }, '-=0.55')
-        .to(scrollHintRef.current, {
-          opacity: 1, duration: 0.6,
-        }, '-=0.3')
+        floatTweens.current[i] = tw
+      })
     }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
-  /* ── Scroll parallax (different depths per image) ───────────────── */
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const base = {
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top top',
-          end:     'bottom top',
-          scrub:   true,
-        },
-      }
-      gsap.to(img1Ref.current, { ...base, y: '-22%' })
-      gsap.to(img2Ref.current, { ...base, y: '-38%' })
-    }, sectionRef)
+  /* ── Hover handlers ─────────────────────────────────────────────── */
+  const hoverIn = (i) => {
+    if (floatTweens.current[i]) floatTweens.current[i].pause()
+    gsap.to(outerRefs.current[i], {
+      scale: 1.10, rotation: 0,
+      duration: 0.4, ease: 'power2.out', overwrite: 'auto',
+    })
+    gsap.to(innerRefs.current[i], {
+      y: -10, duration: 0.35, ease: 'power2.out', overwrite: 'auto',
+    })
+    gsap.set(outerRefs.current[i], { zIndex: 20 })
+  }
 
-    return () => ctx.revert()
-  }, [])
-
-  /* ── Mouse parallax ─────────────────────────────────────────────── */
-  useEffect(() => {
-    let tx = 0, ty = 0, cx = 0, cy = 0
-
-    const onMove = (e) => {
-      tx = (e.clientX / window.innerWidth  - 0.5) * 2
-      ty = (e.clientY / window.innerHeight - 0.5) * 2
-    }
-
-    const tick = () => {
-      mouseRafRef.current = requestAnimationFrame(tick)
-      cx += (tx - cx) * 0.05
-      cy += (ty - cy) * 0.05
-      gsap.set(img1Ref.current, { x: cx *  22, y: cy *  12 })
-      gsap.set(img2Ref.current, { x: cx * -32, y: cy * -18 })
-    }
-
-    window.addEventListener('mousemove', onMove, { passive: true })
-    mouseRafRef.current = requestAnimationFrame(tick)
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(mouseRafRef.current)
-    }
-  }, [])
+  const hoverOut = (i, rot) => {
+    gsap.to(outerRefs.current[i], {
+      scale: 1, rotation: rot,
+      duration: 0.55, ease: 'power3.out', overwrite: 'auto',
+    })
+    gsap.to(innerRefs.current[i], {
+      y: 0,
+      duration: 0.55, ease: 'power3.out', overwrite: 'auto',
+      onComplete: () => {
+        if (floatTweens.current[i]) floatTweens.current[i].resume()
+      },
+    })
+    gsap.set(outerRefs.current[i], { zIndex: STAMPS[i].zIndex })
+  }
 
   return (
     <section ref={sectionRef} className={styles.hero} id="hero-new">
 
-      {/* Collage illustration 1 — top-left */}
-      <div ref={img1Ref} className={`${styles.collage} ${styles.collage1}`}>
-        <img src={IMG_1} alt="" aria-hidden="true" />
-      </div>
-
-      {/* Collage illustration 2 — bottom-right */}
-      <div ref={img2Ref} className={`${styles.collage} ${styles.collage2}`}>
-        <img src={IMG_2} alt="" aria-hidden="true" />
-      </div>
-
-      {/* Noise grain overlay */}
+      {/* Noise grain */}
       <div className={styles.grain} aria-hidden="true" />
 
       {/* Centre content */}
@@ -133,6 +176,36 @@ export default function HeroSection() {
         <p ref={subtitleRef} className={styles.subtitle}>
           Strategy&nbsp;·&nbsp;Design&nbsp;·&nbsp;Storytelling
         </p>
+      </div>
+
+      {/* ── Stamps cluster ────────────────────────────────────────── */}
+      <div className={styles.stampsCluster} aria-hidden="true">
+        {STAMPS.map((s, i) => (
+          <div
+            key={i}
+            ref={el => { outerRefs.current[i] = el }}
+            className={styles.stampOuter}
+            style={{
+              '--rot': `${s.rot}deg`,
+              '--tx':  `${s.x}px`,
+              '--ty':  `${s.y}px`,
+              zIndex:  s.zIndex,
+            }}
+            onMouseEnter={() => hoverIn(i)}
+            onMouseLeave={() => hoverOut(i, s.rot)}
+          >
+            <div ref={el => { innerRefs.current[i] = el }}>
+              <div className={styles.stamp}>
+                <img src={s.img} className={styles.stampImg} alt="" />
+                <div className={styles.stampFoot}>
+                  <span className={styles.stampVal}>₹ 5.00</span>
+                  <span className={styles.stampCountry}>INDIA</span>
+                </div>
+                <div className={styles.postmark} />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Scroll hint */}
